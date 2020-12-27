@@ -4,7 +4,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
+import com.ss.sf.lms.dao.BookDAO;
 import com.ss.sf.lms.dao.BranchDAO;
+import com.ss.sf.lms.domain.Book;
 import com.ss.sf.lms.domain.Branch;
 
 public class Main {
@@ -16,6 +18,8 @@ public class Main {
 	//Borrower Class
 		//methods
 	
+	
+	//super loop break/continue that goes back to previous menu?
 	
 	
 	//while role selection == certain class
@@ -41,7 +45,9 @@ public class Main {
 			Boolean roled = true;
 			
 			while (roled) {
-				//LIBRARAIN SESSION
+				/**
+				 * LIBRARIAN SESSION
+				 */
 				if (roleSelection == 1) {
 					//Initialize Librarian Session move
 					
@@ -109,6 +115,30 @@ public class Main {
 									branched = false;
 									//then go back to LIB3
 									
+								} else if (action == 2) {
+									BookDAO books = new BookDAO();
+									List<Book> booklist = books.readBooksAuthor();
+									for (Book a: booklist) {
+										Integer id = a.getBookId();
+										String title = a.getTitle();
+										
+										//need to join to get author
+										//then get list of books
+										String author = a.getAuthor();
+										System.out.println(id + ") "+title+ " by "+author);
+										//then get copies for next menu
+										//branchId = null;
+										//branched = false;
+										//actually this goes back to LIB2 NOT LIB3
+									}
+									
+									Integer book = Integer.parseInt(scan.nextLine());
+									
+									//get book copies DAO for # of copies
+									//show number of copies for that book
+									//take inputenter new number of copies
+									//update taken
+								
 								}
 							}
 							//break or continue
@@ -117,11 +147,20 @@ public class Main {
 						}
 					}
 					
+					/**END 
+					 * OF 
+					 * LIBRARIAN 
+					 * SESSION
+					*/
 					
 				} else if (roleSelection == 2) {
-					//Initialize Administrator Session
+					/**
+					 * ADMIN SESSION
+					 */
 				} else if (roleSelection == 3) {
-					//Initialize Borrower Session
+					/**
+					 * BORROWER SESSION
+					 */
 				} else {
 					System.out.println("Please pick a valid choice");
 					roled = false;
