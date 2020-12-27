@@ -6,8 +6,10 @@ import java.util.Scanner;
 
 import com.ss.sf.lms.dao.BookDAO;
 import com.ss.sf.lms.dao.BranchDAO;
+import com.ss.sf.lms.dao.BookCopyDAO;
 import com.ss.sf.lms.domain.Book;
 import com.ss.sf.lms.domain.Branch;
+import com.ss.sf.lms.domain.BookCopy;
 
 public class Main {
 	//create session class?
@@ -133,6 +135,12 @@ public class Main {
 									}
 									
 									Integer book = Integer.parseInt(scan.nextLine());
+									
+									//add copies to book Book
+									
+									//DONT CREATE NEW BOOKDAO
+									//CopyDao copiesofBook = new BookCopyDao();
+									
 									
 									//get book copies DAO for # of copies
 									//show number of copies for that book

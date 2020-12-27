@@ -34,19 +34,6 @@ public class Book implements Serializable {
 	}
 	
 	/**
-	 * AUTHOR JOIN
-	 * 
-	 */
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-	
-	public String getAuthor() {
-		return author;
-	}
-	
-	
-	/**
 	 * @param title the title to set
 	 */
 	public void setTitle(String title) {
@@ -64,6 +51,21 @@ public class Book implements Serializable {
 	public void setAuthId(Integer authId) {
 		this.authId = authId;
 	}
+	
+
+	/**
+	 * AUTHOR JOIN
+	 * 
+	 */
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
+	public String getAuthor() {
+		return author;
+	}
+	
+	
 	/**
 	 * @return the pubId
 	 */
