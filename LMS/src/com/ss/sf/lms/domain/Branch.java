@@ -44,7 +44,7 @@ public class Branch implements Serializable {
 	 * @param branchAddress the branchAddress to set
 	 */
 	public void setBranchAddress(String branchAddress) {
-
+		this.branchAddress = branchAddress;
 	}
 	
 	@Override

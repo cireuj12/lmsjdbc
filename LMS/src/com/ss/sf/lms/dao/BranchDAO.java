@@ -11,12 +11,12 @@ public class BranchDAO extends BaseDAO {
 
 	
 	public void addBranch(Branch branch) throws ClassNotFoundException, SQLException {
-		save("Insert into tbl_branch (branchName) values (?)", 
+		save("Insert into tbl_library_branch (branchName) values (?)", 
 				new Object[] {branch.getBranchName()});
 	}
 	  
 	public void updateBranch(Branch branch) throws ClassNotFoundException, SQLException{
-		save("update tbl_branch set branchName = ? where branchId = ?", 
+		save("update tbl_library_branch set branchName = ? where branchId = ?", 
 				new Object[] {branch.getBranchName(),
 								branch.getBranchId()});
 	}
@@ -27,12 +27,12 @@ public class BranchDAO extends BaseDAO {
 	}
 	
 	public List<Branch> readBranchs() throws ClassNotFoundException, SQLException { //slightly different
-		return read("select * from tbl_branch", null);
+		return read("select * from tbl_library_branch", new Object[] {});
 	
 	}
 	
 	public List<Branch> readBranchsbyNameString(String branchName) throws ClassNotFoundException, SQLException { //slightly different
-		return read("select * from tbl_branch where branchNAme = ? ", new Object[] {branchName});
+		return read("select * from tbl_library_branch where branchName = ? ", new Object[] {branchName});
 	}
 
 
@@ -44,8 +44,9 @@ public class BranchDAO extends BaseDAO {
 		while (rs.next()) {
 			Branch branch = new Branch(); //  this part is specific to each entity domain, so hard for Base
 			
-			branch.setBranchId(rs.getInt("branchID"));
+			branch.setBranchId(rs.getInt("branchId"));
 			branch.setBranchName(rs.getString("branchName"));
+			branch.setBranchAddress(rs.getString("branchAddress"));
 			branchs.add(branch);
 			// YOU CAN DO CONSTRUCTOR //1:41
 		};

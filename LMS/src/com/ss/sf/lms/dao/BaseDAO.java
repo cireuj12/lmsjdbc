@@ -51,7 +51,6 @@ public abstract class BaseDAO<T> {
 		ResultSet rs = pstmt.executeQuery();
 		return extractData(rs);
 
-		
 	}
 	
 	abstract List<T> extractData(ResultSet rs) throws ClassNotFoundException, SQLException;
