@@ -1,0 +1,55 @@
+package com.ss.sf.lms.dao;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ss.sf.lms.domain.Branch;
+
+public class BranchDAO extends BaseDAO {
+
+	
+	public void addBranch(Branch branch) throws ClassNotFoundException, SQLException {
+		save("Insert into tbl_branch (branchName) values (?)", 
+				new Object[] {branch.getBranchName()});
+	}
+	  
+	public void updateBranch(Branch branch) throws ClassNotFoundException, SQLException{
+		save("update tbl_branch set branchName = ? where branchId = ?", 
+				new Object[] {branch.getBranchName(),
+								branch.getBranchId()});
+	}
+	
+	public void deleteBranch(Branch branch) throws ClassNotFoundException, SQLException{
+		save("delete from tbl where branchId = ?", 
+				new Object[] {branch.getBranchId()}) ;
+	}
+	
+	public List<Branch> readBranchs() throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_branch", null);
+	
+	}
+	
+	public List<Branch> readBranchsbyNameString(String branchName) throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_branch where branchNAme = ? ", new Object[] {branchName});
+	}
+
+
+	@Override
+	List<Branch> extractData(ResultSet rs) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		List<Branch> branchs = new ArrayList<>();
+		
+		while (rs.next()) {
+			Branch branch = new Branch(); //  this part is specific to each entity domain, so hard for Base
+			
+			branch.setBranchId(rs.getInt("branchID"));
+			branch.setBranchName(rs.getString("branchName"));
+			branchs.add(branch);
+			// YOU CAN DO CONSTRUCTOR //1:41
+		};
+		return branchs;
+	} 
+}
+ 
