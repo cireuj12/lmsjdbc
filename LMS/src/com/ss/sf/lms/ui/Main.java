@@ -1,7 +1,6 @@
 package com.ss.sf.lms.ui;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -37,33 +36,85 @@ public class Main {
 				System.out.println("Shutting off...");
 				System.out.close();
 			}
-			loggedIn = true;
 			
-//			while (loggedIn) {
+			loggedIn = true;
+			Boolean roled = true;
+			
+			while (roled) {
+				//LIBRARAIN SESSION
 				if (roleSelection == 1) {
 					//Initialize Librarian Session move
 					
-					//1st librarian menu
-					Scanner scanAgain = new Scanner(System.in);
+					//LIB1
 					System.out.println("1) Enter Branch you manage");
 					System.out.println("2) Quit to previous menu");
-					Integer choice = Integer.parseInt(scanAgain.nextLine());
+					Integer choice = Integer.parseInt(scan.nextLine());
 					
 					if (choice == 2) {
-						loggedIn = false;
-					} else {
-						//2nd librarian menu
-						BranchDAO branches = new BranchDAO();
-						List<Branch> branchs = branches.readBranchs();
-						for (Branch a: branchs) {
-							Integer id = a.getBranchId();
-							String branchName = a.getBranchName();
-							String branchAddress = a.getBranchAddress();
-							System.out.println(id + ") "+branchName+", "+branchAddress);
+						roled = false;
+						loggedIn = false; //goes back to Main
+					};
+					Boolean session = true;
+					
+					while(session == true) {
+						if (choice == 2) {
+							session = false;
+						} else {
+							//LIB2
+							BranchDAO branches = new BranchDAO();
+							List<Branch> branchs = branches.readBranchs();
+							for (Branch a: branchs) {
+								Integer id = a.getBranchId();
+								String branchName = a.getBranchName();
+								String branchAddress = a.getBranchAddress();
+								System.out.println(id + ") "+branchName+", "+branchAddress);
+							}
+							System.out.println("enter 0 to go to previous");
+							
+							Integer branchId = Integer.parseInt(scan.nextLine());
+							
+							if (branchId == 0) {
+								session = false; // goes back to LIB1
+							}
+							
+							Boolean branched = true;
+						
+							//LIB3
+							while (branched == true) {
+								System.out.println("1) Update the details of the Library");
+								System.out.println("2) Add copies of Book to the Branch");
+								System.out.println("3) Quit to Previous");
+								
+								Integer action = Integer.parseInt(scan.nextLine());
+								
+								if (action == 3) {
+									branched = false; //goes back to LIB3
+								}
+								
+								if (action == 1) {
+									System.out.println("You have chosen to update the Branch with Branch Id: X and Branch Name: ABCD.\n "
+											+ "Enter ‘quit’ at any prompt to cancel operation.");
+									
+									System.out.println("Please enter new branch name or enter N/A for no change: ");
+									String newName = scan.nextLine();
+									System.out.println("Please enter new branch address or enter N/A for no change: ");
+									String newAddress = scan.nextLine();
+									
+									branchs.get(branchId-1).setBranchName(newName);
+									branchs.get(branchId-1).setBranchAddress(newAddress);						
+									branches.updateBranch(branchs.get(branchId-1));
+									
+									System.out.println("Branch info has been updated");
+									branchId = null;
+									branched = false;
+									//then go back to LIB3
+									
+								}
+							}
+							//break or continue
+							//update details of library
+							//add copies of Book to Branch
 						}
-						//break or continue
-						//update details of library
-						//add copies of Book to Branch
 					}
 					
 					
@@ -71,8 +122,12 @@ public class Main {
 					//Initialize Administrator Session
 				} else if (roleSelection == 3) {
 					//Initialize Borrower Session
+				} else {
+					System.out.println("Please pick a valid choice");
+					roled = false;
+					loggedIn = false; 
 				}
-//			}
+			}
 		
 		}
 	}

@@ -16,8 +16,9 @@ public class BranchDAO extends BaseDAO {
 	}
 	  
 	public void updateBranch(Branch branch) throws ClassNotFoundException, SQLException{
-		save("update tbl_library_branch set branchName = ? where branchId = ?", 
+		save("update tbl_library_branch set branchName = ?, branchAddress = ? where branchId = ?", 
 				new Object[] {branch.getBranchName(),
+								branch.getBranchAddress(),
 								branch.getBranchId()});
 	}
 	
