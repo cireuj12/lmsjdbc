@@ -33,7 +33,7 @@ public class AuthorDAO extends BaseDAO<Author> { //NO TRY CATCH INSIDE OF DAO
 	}
 	
 	public void deleteAuthor(Author author) throws ClassNotFoundException, SQLException{
-		save("delete from tbl where authorId = ?", 
+		save("delete from tbl_author where authorId = ?", 
 				new Object[] {author.getAuthorId()}) ;
 	}
 	

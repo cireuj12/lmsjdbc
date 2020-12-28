@@ -14,6 +14,7 @@ public class Book implements Serializable {
 	private Integer authId;
 	private Integer pubId;
 	private String author;
+	private Integer branchId;
 	/**
 	 * @return the bookId
 	 */
@@ -64,6 +65,17 @@ public class Book implements Serializable {
 	public String getAuthor() {
 		return author;
 	}
+	
+	public Integer getBranchId() {
+		return branchId;
+	}
+	/**
+	 * @param authId the authId to set
+	 */
+	public void setBranchId(Integer branchId) {
+		this.branchId = branchId;
+	}
+	
 	
 	
 	/**

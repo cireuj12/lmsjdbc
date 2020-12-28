@@ -6,16 +6,21 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import com.ss.sf.lms.dao.BookDAO;
+import com.ss.sf.lms.dao.BorrowerDAO;
 import com.ss.sf.lms.dao.BranchDAO;
 import com.ss.sf.lms.dao.BookCopyDAO;
 import com.ss.sf.lms.domain.Book;
 import com.ss.sf.lms.domain.Branch;
 import com.ss.sf.lms.domain.BookCopy;
+import com.ss.sf.lms.domain.Borrower;
 
 public class Main {
 	//create session class?
 	//Librarian Class
 		//methods
+			//initialize
+			//log out
+			//boolean for session active
 	//Administrator Class
 		//methods
 	//Borrower Class
@@ -53,6 +58,7 @@ public class Main {
 				 */
 				if (roleSelection == 1) {
 					//Initialize Librarian Session move
+					//CREATE LIBRARIAN CLASS SESSION
 					
 					//LIB1
 					System.out.println("1) Enter Branch you manage");
@@ -70,8 +76,9 @@ public class Main {
 							session = false;
 						} else {
 							//LIB2
-							BranchDAO branches = new BranchDAO();
-							List<Branch> branchs = branches.readBranchs();
+							//LIST BRANCHES
+							BranchDAO branchdao = new BranchDAO();
+							List<Branch> branchs = branchdao.readBranchs();
 							for (Branch a: branchs) {
 								Integer id = a.getBranchId();
 								String branchName = a.getBranchName();
@@ -111,7 +118,7 @@ public class Main {
 									
 									branchs.get(branchId-1).setBranchName(newName);
 									branchs.get(branchId-1).setBranchAddress(newAddress);						
-									branches.updateBranch(branchs.get(branchId-1)); //updating the branch with new parameters
+									branchdao.updateBranch(branchs.get(branchId-1)); //updating the branch with new parameters
 									
 									System.out.println("Branch info has been updated");
 									branchId = null;
@@ -124,9 +131,6 @@ public class Main {
 									for (Book a: booklist) {
 										Integer id = a.getBookId();
 										String title = a.getTitle();
-										
-										//need to join to get author
-										//then get list of books
 										String author = a.getAuthor();
 										System.out.println(id + ") "+title+ " by "+author);
 										//then get copies for next menu
@@ -135,6 +139,8 @@ public class Main {
 										//actually this goes back to LIB2 NOT LIB3
 									}
 									
+									
+									//UPDATE BOOK NO
 									Integer bookToSearch = Integer.parseInt(scan.nextLine());
 									//which book are you updating?
 									//initialize access to BookCopy DB
@@ -158,40 +164,204 @@ public class Main {
 									/**DONE
 									 * get book copies DAO for # of copies
 									show number of copies for that book
-									take inputenter new number of copies
+									take input enter new number of copies
 									update taken
 									*/
 								
 								}
 							}
 							//break or continue
-							//update details of library
-							//add copies of Book to Branch
 						}
 					}
 					
 					/**END 
+					 * 
 					 * OF 
+					 * 
 					 * LIBRARIAN 
+					 * 
 					 * SESSION
+					 * 
 					*/
+					
+					
+					
+					
 					
 				} else if (roleSelection == 2) {
 					/**
 					 * ADMIN SESSION
 					 */
+					
+					
 				} else if (roleSelection == 3) {
 					/**
 					 * BORROWER SESSION
 					 */
+					
+						System.out.println("Enter your Card Number: ");
+						
+						Integer cardNo = Integer.parseInt(scan.nextLine());
+						
+						BorrowerDAO borrowers = new BorrowerDAO();
+						Borrower borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
+						
+						if (borrowerSelected == null) { //DOES NOT LET THE USER PASS WITH INCORRECT CARD NO
+							System.out.println("This is not a valid Number, please enter a new number or quit: ");
+							cardNo = Integer.parseInt(scan.nextLine());
+							borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
+						}
+						
+						Boolean validBorrower = true; //use this properly
+						
+						while (validBorrower) {
+							String action = null;
+							//BORR1
+							System.out.println("1) Check out a book");
+							System.out.println("2) Return a book");
+							System.out.println("3) Quit to previous");
+							
+							int selection = Integer.parseInt(scan.nextLine());
+							
+							if (selection == 3)  {
+								roled = false; // GOES BACK TO MAIN
+							}
+							action = selection == 1 ? "check" : "return";
+							Boolean actioned = true;
+							
+							while (actioned) {
+								
+								//check
+								
+								//LIST BRANCHES
+								BranchDAO branchdao = new BranchDAO();
+								List<Branch> branchs = branchdao.readBranchs();
+								if (action == "check") {
+									
+									for (Branch a: branchs) {
+										Integer id = a.getBranchId();
+										String branchName = a.getBranchName();
+										String branchAddress = a.getBranchAddress();
+										System.out.println(id + ") "+branchName+", "+branchAddress);
+									}
+									System.out.println("enter 0 to go to previous");
+									
+									Integer branchId = Integer.parseInt(scan.nextLine());
+									
+									if (branchId == 0) {
+										actioned = false; // goes back to BORR1
+										
+										//dont work
+									}
+									
+									Boolean branched = true;
+									
+									while (branched) {
+										//get all books at that branch that have more than one copy(tbl_book_copies where branchId = selected), with author and title(from getBooks);
+										
+										//showing books in that branch
+										BookDAO bookdao = new BookDAO();
+										List<Book> books = bookdao.readBooksbyBranch(branchId);
+										for (Book a: books) {
+											Integer id = a.getBookId();
+											String title = a.getTitle();
+											String author = a.getAuthor();
+											System.out.println(id + ") "+title+ " by "+author);
+										}
+										System.out.println("Please Select a book to checkout");
+										Integer bookToSearch = Integer.parseInt(scan.nextLine());
+										
+										
+										//UPDATE BOOK NO
+										BookCopyDAO copiesofBook = new BookCopyDAO();
+										BookCopy BookSelection = copiesofBook.readBookbyId(bookToSearch).get(0);
+										Integer numOfCopies = BookSelection.getNoOfCopies();
+										//You got the Book you want to change and how many copies it has
+										
+										System.out.println("Existing number of copies: "+numOfCopies);
+										//subtract 1
+										
+										BookSelection.setNoOfCopies(numOfCopies - 1); //set new copy in model
+										copiesofBook.updateBookCopy(BookSelection); //set new copy in DB from model
+										
+										numOfCopies = BookSelection.getNoOfCopies(); //show new result
+										System.out.println("Now there are: "+numOfCopies);
+										
+										
+										/**NOW 
+										 * ADD 
+										 * BOOK_LOANS
+										
+										*/
+										
+										
+							
+											//choose book
+											//create BookLoans model
+											//create BookLoansDAO class
+											//update book in book_loans
+												//date out
+												//due date = date out + 1 week
+										
+										//back to LIB3
+										branchId = null;
+										branched = false;
+											
+									}
+								} else if (action == "return") {
+									
+									//Pick the branch you want to return to:
+									for (Branch a: branchs) {
+										Integer id = a.getBranchId();
+										String branchName = a.getBranchName();
+										String branchAddress = a.getBranchAddress();
+										System.out.println(id + ") "+branchName+", "+branchAddress);
+									}
+									System.out.println("enter 0 to go to previous");
+									Integer branchId = Integer.parseInt(scan.nextLine());
+									if (branchId == 0) {
+										action = null; // goes back to BORR1
+									}
+									
+									Boolean branched = true;
+									
+									while (branched) {
+										//get all books at that branch that have even 0 copies
+											//choose book
+											//DELETE book in book_loans
+
+									}
+								}
+								
+								
+								
+								
+								//return
+								
+							}
+						}
+					
+					
+					//now access BorrowerDAO
+					
+					//access LoanDAO
+					
 				} else {
 					System.out.println("Please pick a valid choice");
 					roled = false;
 					loggedIn = false; 
 				}
 			}
-		
+			scan.close();
+			System.out.close();
+
 		}
 	}
 
 }
+
+//My approach was to build out the DAOs/Models as I built out the interface functionality of the console
+//Load up the DB with filler data to test
+//Built out Librarian and all the requiste clasess fro the Methods in the Console Interface
+//Then Borrower
+//Then Admin
