@@ -10,13 +10,13 @@ import com.ss.sf.lms.domain.Borrower;
 public class BorrowerDAO extends BaseDAO {
 
 	public void addBorrower(Borrower borrower) throws ClassNotFoundException, SQLException {
-		save("Insert into tbl_library_borrower (cardNo, name, authID, pubId ) values (?)", 
+		save("Insert into tbl_borrower (cardNo, name, authID, pubId ) values (?)", 
 				new Object[] {borrower.getCardNo(),
 								borrower.getName()});
 	}
 	  
 	public void updateBorrower(Borrower borrower) throws ClassNotFoundException, SQLException{
-		save("update tbl_library_borrower set name = ? where cardNo = ?", 
+		save("update tbl_borrower set name = ? where cardNo = ?", 
 				new Object[] {borrower.getName(),
 								borrower.getCardNo()});
 	}

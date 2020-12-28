@@ -1,17 +1,21 @@
 package com.ss.sf.lms.ui;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
 import com.ss.sf.lms.dao.BookDAO;
+import com.ss.sf.lms.dao.BookLoanDAO;
 import com.ss.sf.lms.dao.BorrowerDAO;
 import com.ss.sf.lms.dao.BranchDAO;
 import com.ss.sf.lms.dao.BookCopyDAO;
 import com.ss.sf.lms.domain.Book;
 import com.ss.sf.lms.domain.Branch;
 import com.ss.sf.lms.domain.BookCopy;
+import com.ss.sf.lms.domain.BookLoan;
 import com.ss.sf.lms.domain.Borrower;
 
 public class Main {
@@ -31,18 +35,21 @@ public class Main {
 	
 	
 	//while role selection == certain class
-	static Boolean loggedIn = false;
+
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		
+		Boolean loggedIn = false;
+		Scanner scan = new Scanner(System.in);
 		while (loggedIn == false) {
 			System.out.println("Welcome to the SS Library Management System. Which category of a user are you: \n");
 			System.out.println("1) Librarian");
 			System.out.println("2) Administrator");
 			System.out.println("3) Borrower");
 			System.out.println("4) Close");
-			Scanner scan = new Scanner(System.in);
+			
 			
 			Integer roleSelection = Integer.parseInt(scan.nextLine());
+			System.out.println("");
 			
 			if(roleSelection == 4) {
 				System.out.println("Shutting off...");
@@ -52,7 +59,7 @@ public class Main {
 			loggedIn = true;
 			Boolean roled = true;
 			
-			while (roled) {
+			while (roled != false) {
 				/**
 				 * LIBRARIAN SESSION
 				 */
@@ -65,10 +72,11 @@ public class Main {
 					System.out.println("2) Quit to previous menu");
 					Integer choice = Integer.parseInt(scan.nextLine());
 					
-					if (choice == 2) {
+					if (choice == 2) { //DONT WORK
 						roled = false;
-						loggedIn = false; //goes back to Main
+//						loggedIn = false; //goes back to Main
 					};
+					
 					Boolean session = true;
 					
 					while(session == true) {
@@ -88,6 +96,7 @@ public class Main {
 							System.out.println("enter 0 to go to previous");
 							
 							Integer branchId = Integer.parseInt(scan.nextLine());
+							System.out.println("");
 							
 							if (branchId == 0) {
 								session = false; // goes back to LIB1
@@ -102,6 +111,7 @@ public class Main {
 								System.out.println("3) Quit to Previous");
 								
 								Integer action = Integer.parseInt(scan.nextLine());
+								System.out.println("");
 								
 								if (action == 3) {
 									branched = false; //goes back to LIB3
@@ -142,6 +152,7 @@ public class Main {
 									
 									//UPDATE BOOK NO
 									Integer bookToSearch = Integer.parseInt(scan.nextLine());
+									System.out.println("");
 									//which book are you updating?
 									//initialize access to BookCopy DB
 									BookCopyDAO copiesofBook = new BookCopyDAO();
@@ -188,10 +199,7 @@ public class Main {
 					
 					
 					
-				} else if (roleSelection == 2) {
-					/**
-					 * ADMIN SESSION
-					 */
+
 					
 					
 				} else if (roleSelection == 3) {
@@ -202,6 +210,7 @@ public class Main {
 						System.out.println("Enter your Card Number: ");
 						
 						Integer cardNo = Integer.parseInt(scan.nextLine());
+						System.out.println("");
 						
 						BorrowerDAO borrowers = new BorrowerDAO();
 						Borrower borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
@@ -222,6 +231,7 @@ public class Main {
 							System.out.println("3) Quit to previous");
 							
 							int selection = Integer.parseInt(scan.nextLine());
+							System.out.println("");
 							
 							if (selection == 3)  {
 								roled = false; // GOES BACK TO MAIN
@@ -247,6 +257,7 @@ public class Main {
 									System.out.println("enter 0 to go to previous");
 									
 									Integer branchId = Integer.parseInt(scan.nextLine());
+									System.out.println("");
 									
 									if (branchId == 0) {
 										actioned = false; // goes back to BORR1
@@ -270,6 +281,7 @@ public class Main {
 										}
 										System.out.println("Please Select a book to checkout");
 										Integer bookToSearch = Integer.parseInt(scan.nextLine());
+										System.out.println("");
 										
 										
 										//UPDATE BOOK NO
@@ -279,36 +291,64 @@ public class Main {
 										//You got the Book you want to change and how many copies it has
 										
 										System.out.println("Existing number of copies: "+numOfCopies);
-										//subtract 1
 										
-										BookSelection.setNoOfCopies(numOfCopies - 1); //set new copy in model
-										copiesofBook.updateBookCopy(BookSelection); //set new copy in DB from model
-										
-										numOfCopies = BookSelection.getNoOfCopies(); //show new result
-										System.out.println("Now there are: "+numOfCopies);
-										
-										
-										/**NOW 
-										 * ADD 
-										 * BOOK_LOANS
-										
-										*/
-										
-										
-							
-											//choose book
-											//create BookLoans model
-											//create BookLoansDAO class
-											//update book in book_loans
-												//date out
-												//due date = date out + 1 week
-										
-										//back to LIB3
-										branchId = null;
-										branched = false;
+										if (numOfCopies == 0) { //so borrower can't check out empty books
+											System.out.println("Sorry there are no copies of this book to checkout");
+											branchId = null;
+											branched = false;
+										} else {
+																					
+											BookSelection.setNoOfCopies(numOfCopies - 1); // subtract 1 a and set new copy in model
+											copiesofBook.updateBookCopy(BookSelection); //set new copy in DB from model
 											
+											numOfCopies = BookSelection.getNoOfCopies(); //show new result
+											System.out.println("Now there are: "+numOfCopies);
+											
+											
+											/**NOW 
+											 * ADD 
+											 * BOOK_LOANS_DAO
+											 * BOOK_LOANS_TABLE
+								
+											*/
+											
+											BookLoanDAO bookloanDao = new BookLoanDAO();
+											BookLoan addLoan = new BookLoan();
+											addLoan.setBookId(bookToSearch);
+											addLoan.setBranchId(branchId);
+											addLoan.setCardNo(cardNo);
+											addLoan.setDateOut(new Timestamp(System.currentTimeMillis())); // consider Java Util Time
+											
+											//7 days
+											Calendar cal = Calendar.getInstance();
+											cal.add(Calendar.DAY_OF_WEEK, 7);
+											Timestamp ts = new Timestamp(cal.getTime().getTime());
+											
+											addLoan.setDueDate(ts);
+											
+//											System.out.println(addLoan.getBookId());
+//											System.out.println(addLoan.getBranchId());
+//											System.out.println(addLoan.getCardNo());
+//											System.out.println(addLoan.getDateOut());
+//											System.out.println(addLoan.getDueDate());
+											
+											bookloanDao.addBookLoan(addLoan);
+											
+											System.out.println("The book has been checked out and logged. ");
+											System.out.println("\n");
+									
+													//date out
+													//due date = date out + 1 week
+											
+											//back to LIB3
+											branchId = null;
+											branched = false;
+												
+										}
 									}
 								} else if (action == "return") {
+									
+									//can only return a book he has
 									
 									//Pick the branch you want to return to:
 									for (Branch a: branchs) {
@@ -346,7 +386,12 @@ public class Main {
 					
 					//access LoanDAO
 					
-				} else {
+				} else if (roleSelection == 2) {
+					/**
+					 * ADMIN SESSION
+					 */
+				}
+				else {
 					System.out.println("Please pick a valid choice");
 					roled = false;
 					loggedIn = false; 

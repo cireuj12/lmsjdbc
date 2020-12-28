@@ -16,11 +16,12 @@ public class BookCopyDAO extends BaseDAO {
 								bookCopy.getNoOfCopies()});
 	}
 	  
-	public void updateBookCopy(BookCopy bookCopy) throws ClassNotFoundException, SQLException{
-		save("update tbl_book_copies set noOfCopies = ? where bookId = ?", 
+	public void updateBookCopy(BookCopy bookCopy) throws ClassNotFoundException, SQLException{//AND BRANCH ID
+		save("update tbl_book_copies set noOfCopies = ? where bookId = ? and branchId = ?", 
 				new Object[] {
 						bookCopy.getNoOfCopies(),
-						bookCopy.getBookId()});
+						bookCopy.getBookId(),
+						bookCopy.getBranchId()});
 	}
 	
 	public void deleteBookCopy(BookCopy bookCopy) throws ClassNotFoundException, SQLException{

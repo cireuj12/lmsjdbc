@@ -8,7 +8,7 @@ public class Borrower implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -7714375277534470847L;
-	private int cardNo;
+	private Integer cardNo;
 	private String name;
 	private String address;
 	private String phone;
@@ -21,7 +21,7 @@ public class Borrower implements Serializable{
 	/**
 	 * @param cardNo the cardNo to set
 	 */
-	public void setCardNo(int cardNo) {
+	public void setCardNo(Integer cardNo) {
 		this.cardNo = cardNo;
 	}
 	/**
