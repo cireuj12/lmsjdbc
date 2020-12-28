@@ -17,10 +17,10 @@ public class BookCopyDAO extends BaseDAO {
 	}
 	  
 	public void updateBookCopy(BookCopy bookCopy) throws ClassNotFoundException, SQLException{
-		save("update tbl_book_copies set bookId = ?, branchId = ?, noOfCopies = ? where bookId = ?", 
-				new Object[] {bookCopy.getBookId(),
-						bookCopy.getBranchId(),
-						bookCopy.getNoOfCopies()});
+		save("update tbl_book_copies set noOfCopies = ? where bookId = ?", 
+				new Object[] {
+						bookCopy.getNoOfCopies(),
+						bookCopy.getBookId()});
 	}
 	
 	public void deleteBookCopy(BookCopy bookCopy) throws ClassNotFoundException, SQLException{
@@ -47,7 +47,7 @@ public class BookCopyDAO extends BaseDAO {
 			BookCopy bookCopy = new BookCopy(); //  this part is specific to each entity domain, so hard for Base
 			
 			bookCopy.setBookId(rs.getInt("bookId"));
-			bookCopy.setTitle(rs.getString("title"));
+//			bookCopy.setTitle(rs.getString("title")); //title not neccesary for updating Copies
 			bookCopy.setBranchId(rs.getInt("branchId"));
 			bookCopy.setNoOfCopies(rs.getInt("noOfCopies"));
 			

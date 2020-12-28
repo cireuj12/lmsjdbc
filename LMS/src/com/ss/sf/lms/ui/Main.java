@@ -2,6 +2,7 @@ package com.ss.sf.lms.ui;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import com.ss.sf.lms.dao.BookDAO;
@@ -110,7 +111,7 @@ public class Main {
 									
 									branchs.get(branchId-1).setBranchName(newName);
 									branchs.get(branchId-1).setBranchAddress(newAddress);						
-									branches.updateBranch(branchs.get(branchId-1));
+									branches.updateBranch(branchs.get(branchId-1)); //updating the branch with new parameters
 									
 									System.out.println("Branch info has been updated");
 									branchId = null;
@@ -134,18 +135,32 @@ public class Main {
 										//actually this goes back to LIB2 NOT LIB3
 									}
 									
-									Integer book = Integer.parseInt(scan.nextLine());
+									Integer bookToSearch = Integer.parseInt(scan.nextLine());
+									//which book are you updating?
+									//initialize access to BookCopy DB
+									BookCopyDAO copiesofBook = new BookCopyDAO();
+									BookCopy BookSelection = copiesofBook.readBookbyId(bookToSearch).get(0);
+									Integer numOfCopies = BookSelection.getNoOfCopies();
+									//You got the Book you want to change and how many copies it has
 									
-									//add copies to book Book
+									System.out.println("Existing number of copies: "+numOfCopies);
+									System.out.println("Enter new number of copies:");
+									Integer newCopies = Integer.parseInt(scan.nextLine());
 									
-									//DONT CREATE NEW BOOKDAO
-									//CopyDao copiesofBook = new BookCopyDao();
+									BookSelection.setNoOfCopies(newCopies); //set new copy in model
+									copiesofBook.updateBookCopy(BookSelection); //set new copy in DB from model
 									
+									numOfCopies = BookSelection.getNoOfCopies(); //show new result
+									System.out.println("New copies changed to: "+numOfCopies);
+									//back to LIB3
+									branchId = null;
 									
-									//get book copies DAO for # of copies
-									//show number of copies for that book
-									//take inputenter new number of copies
-									//update taken
+									/**DONE
+									 * get book copies DAO for # of copies
+									show number of copies for that book
+									take inputenter new number of copies
+									update taken
+									*/
 								
 								}
 							}
