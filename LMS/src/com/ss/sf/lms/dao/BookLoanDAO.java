@@ -32,8 +32,8 @@ public class BookLoanDAO extends BaseDAO {
 								bookLoan.getCardNo()}) ;
 	}
 	
-	public List<BookLoan> readBookLoans() throws ClassNotFoundException, SQLException { //slightly different
-		return read("select * from tbl_book_loans?", new Object[] {});
+	public List<BookLoan> readBookLoansCardNo(Integer cardNo) throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_book_loans where cardNo = ?", new Object[] {cardNo});
 	
 	}
 	

@@ -235,10 +235,15 @@ public class Main {
 							
 							if (selection == 3)  {
 								roled = false; // GOES BACK TO MAIN
+								validBorrower = false;
+								//don't work
 							}
+							
 							action = selection == 1 ? "check" : "return";
 							Boolean actioned = true;
 							
+							
+							//This loop does not rerun
 							while (actioned) {
 								
 								//check
@@ -246,6 +251,9 @@ public class Main {
 								//LIST BRANCHES
 								BranchDAO branchdao = new BranchDAO();
 								List<Branch> branchs = branchdao.readBranchs();
+								
+								
+								//CHECKING OUT
 								if (action == "check") {
 									
 									for (Branch a: branchs) {
@@ -335,7 +343,7 @@ public class Main {
 											bookloanDao.addBookLoan(addLoan);
 											
 											System.out.println("The book has been checked out and logged. ");
-											System.out.println("\n");
+											System.out.println("");
 									
 													//date out
 													//due date = date out + 1 week
@@ -348,31 +356,61 @@ public class Main {
 									}
 								} else if (action == "return") {
 									
-									//can only return a book he has
+									//can only return a book he has select * from tbl_book_loans where cardNo = borrowerId;
+									//create instance of book copy to reduce by 1
 									
-									//Pick the branch you want to return to:
-									for (Branch a: branchs) {
-										Integer id = a.getBranchId();
-										String branchName = a.getBranchName();
-										String branchAddress = a.getBranchAddress();
-										System.out.println(id + ") "+branchName+", "+branchAddress);
-									}
-									System.out.println("enter 0 to go to previous");
-									Integer branchId = Integer.parseInt(scan.nextLine());
-									if (branchId == 0) {
-										action = null; // goes back to BORR1
-									}
+									//show his book copies
+									//click return
+									//+ increase number of copies
+									// delete loan
 									
-									Boolean branched = true;
+									//Pick the branch you want to return to - might not be neccesary cause youre just deleting book loan and copy and branchId in book loan
+									//unless youre returning a book to any branch
+									//assuming you return book to same branch
 									
-									while (branched) {
-										//get all books at that branch that have even 0 copies
-											//choose book
-											//DELETE book in book_loans
-
+									BookLoanDAO bookLoans = new BookLoanDAO();
+									List<BookLoan> borrowerBooks = bookLoans.readBookLoansCardNo(cardNo);
+									for (BookLoan a: borrowerBooks) {
+										Integer book = a.getBookId();
+										Integer branch = a.getBranchId();
+										Integer borrowerCard = a.getCardNo();
+										Timestamp dateOut = a.getDateOut();
+										Timestamp dueDate = a.getDueDate();
+										System.out.println(book + " taken out on " + dateOut + " due on " +dueDate); //add left join for title
 									}
+									System.out.println("\n Which book would you like to return");
+									
+									Integer bookToSearch = Integer.parseInt(scan.nextLine());
+									
+									//update copy
+									
+									BookCopyDAO bookUpdate = new BookCopyDAO();
+									BookCopy BookSelection = bookUpdate.readBookbyId(bookToSearch).get(0);
+									Integer numOfCopies = BookSelection.getNoOfCopies();
+									Integer branching = BookSelection.getBranchId();
+									//You got the Book you want to change and how many copies it has
+									
+												
+									BookSelection.setNoOfCopies(numOfCopies + 1); // subtract 1 a and set new copy in model
+									bookUpdate.updateBookCopy(BookSelection); //set new copy in DB from model
+									
+									numOfCopies = BookSelection.getNoOfCopies(); //show new result
+									
+									
+									//delete from bookLoan table based on parameters
+									BookLoan toDelete = new BookLoan();
+									toDelete.setBookId(bookToSearch);
+									toDelete.setCardNo(cardNo);
+									toDelete.setBranchId(branching);
+									bookLoans.deleteBookLoan(toDelete);
+									
+									System.out.println("The book has been returned. Now there are: "+numOfCopies+"\n");
+									
+									//to return to borrower menu
+									
+									actioned = false;
+									//don't work
 								}
-								
 								
 								
 								
@@ -389,7 +427,14 @@ public class Main {
 				} else if (roleSelection == 2) {
 					/**
 					 * ADMIN SESSION
+					 * Add/Update/Delete/Read Book and Author
+											Add/Update/Delete/Read Genres
+											Add/Update/Delete/Read Publishers
+											Add/Update/Delete/Read Library Branches
+											Add/Update/Delete/Read Borrowers
+											Over-ride Due Date for a Book Loan
 					 */
+					
 				}
 				else {
 					System.out.println("Please pick a valid choice");
