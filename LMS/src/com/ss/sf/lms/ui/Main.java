@@ -40,7 +40,7 @@ public class Main {
 		
 		Boolean loggedIn = false;
 		Scanner scan = new Scanner(System.in);
-		while (loggedIn == false) {
+		do {
 			System.out.println("Welcome to the SS Library Management System. Which category of a user are you: \n");
 			System.out.println("1) Librarian");
 			System.out.println("2) Administrator");
@@ -51,19 +51,24 @@ public class Main {
 			Integer roleSelection = Integer.parseInt(scan.nextLine());
 			System.out.println("");
 			
+			
 			if(roleSelection == 4) {
 				System.out.println("Shutting off...");
 				System.out.close();
+				break;
 			}
 			
-			loggedIn = true;
+//			loggedIn = true;
 			Boolean roled = true;
 			
-			while (roled != false) {
+			do {
 				/**
 				 * LIBRARIAN SESSION
+				 * 
+				 * 
 				 */
-				if (roleSelection == 1) {
+				switch (roleSelection) {
+				case 1: { //if (roleSelection == 1) 
 					//Initialize Librarian Session move
 					//CREATE LIBRARIAN CLASS SESSION
 					
@@ -74,15 +79,18 @@ public class Main {
 					
 					if (choice == 2) { //DONT WORK
 						roled = false;
-//						loggedIn = false; //goes back to Main
+						break;
+
 					};
 					
 					Boolean session = true;
 					
-					while(session == true) {
+					do {
 						if (choice == 2) {
-							session = false;
-						} else {
+//							session = false;
+//							continue;
+						} 
+						else {
 							//LIB2
 							//LIST BRANCHES
 							BranchDAO branchdao = new BranchDAO();
@@ -99,7 +107,9 @@ public class Main {
 							System.out.println("");
 							
 							if (branchId == 0) {
-								session = false; // goes back to LIB1
+								session = false;
+								break;
+//								continue;// goes back to LIB1
 							}
 							
 							Boolean branched = true;
@@ -113,18 +123,33 @@ public class Main {
 								Integer action = Integer.parseInt(scan.nextLine());
 								System.out.println("");
 								
+								
 								if (action == 3) {
-									branched = false; //goes back to LIB3
+									branched = false;
+									break; //goes back to LIB3
 								}
 								
 								if (action == 1) {
-									System.out.println("You have chosen to update the Branch with Branch Id: X and Branch Name: ABCD.\n "
+									System.out.println("You have chosen to update the Branch with Branch Id: "
+											+ branchId
+											+ " and Branch Name: "
+											+ branchs.get(branchId-1).getBranchName()
+											+ ".\n "
 											+ "Enter ‘quit’ at any prompt to cancel operation.");
 									
 									System.out.println("Please enter new branch name or enter N/A for no change: ");
 									String newName = scan.nextLine();
+									if (newName == "quit") {
+										branched = false;
+										break;
+									}
 									System.out.println("Please enter new branch address or enter N/A for no change: ");
 									String newAddress = scan.nextLine();
+									if (newAddress == "quit") {
+										branched = false;
+										break;
+									}
+		
 									
 									branchs.get(branchId-1).setBranchName(newName);
 									branchs.get(branchId-1).setBranchAddress(newAddress);						
@@ -137,7 +162,7 @@ public class Main {
 									
 								} else if (action == 2) {
 									BookDAO books = new BookDAO();
-									List<Book> booklist = books.readBooksAuthor();
+									List<Book> booklist = books.readBooksbyBranch(branchId); //need to specify by branch Id
 									for (Book a: booklist) {
 										Integer id = a.getBookId();
 										String title = a.getTitle();
@@ -156,6 +181,11 @@ public class Main {
 									//which book are you updating?
 									//initialize access to BookCopy DB
 									BookCopyDAO copiesofBook = new BookCopyDAO();
+									
+									
+									//if null I have to add
+									
+									
 									BookCopy BookSelection = copiesofBook.readBookbyId(bookToSearch).get(0);
 									Integer numOfCopies = BookSelection.getNoOfCopies();
 									//You got the Book you want to change and how many copies it has
@@ -183,7 +213,7 @@ public class Main {
 							}
 							//break or continue
 						}
-					}
+					} while(session == true) ;
 					
 					/**END 
 					 * 
@@ -194,7 +224,7 @@ public class Main {
 					 * SESSION
 					 * 
 					*/
-					
+					break;
 					
 					
 					
@@ -202,7 +232,7 @@ public class Main {
 
 					
 					
-				} else if (roleSelection == 3) {
+				} case 3:  {
 					/**
 					 * BORROWER SESSION
 					 */
@@ -423,8 +453,8 @@ public class Main {
 					//now access BorrowerDAO
 					
 					//access LoanDAO
-					
-				} else if (roleSelection == 2) {
+					break;
+				} case 2:  {//(roleSelection == 2) 
 					/**
 					 * ADMIN SESSION
 					 * Add/Update/Delete/Read Book and Author
@@ -434,18 +464,24 @@ public class Main {
 											Add/Update/Delete/Read Borrowers
 											Over-ride Due Date for a Book Loan
 					 */
-					
+					break;
 				}
-				else {
+				default: {
 					System.out.println("Please pick a valid choice");
 					roled = false;
-					loggedIn = false; 
+//					loggedIn = false; //this doesn't go back either
+//					continue;
+					break;
 				}
-			}
-			scan.close();
-			System.out.close();
+			}//end of switch;
 
-		}
+			} while (roled != false);// roled!= false;
+			
+//			scan.close();
+//			System.out.close();
+			continue;
+		} while (true); // loop should always run
+
 	}
 
 }
