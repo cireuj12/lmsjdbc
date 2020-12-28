@@ -43,7 +43,7 @@ public class Main {
 		do {
 			System.out.println("Welcome to the SS Library Management System. Which category of a user are you: \n");
 			System.out.println("1) Librarian");
-			System.out.println("2) Administrator");
+			System.out.println("2) Administrator(Functionality still in Development)");
 			System.out.println("3) Borrower");
 			System.out.println("4) Close");
 			
@@ -77,7 +77,7 @@ public class Main {
 					System.out.println("2) Quit to previous menu");
 					Integer choice = Integer.parseInt(scan.nextLine());
 					
-					if (choice == 2) { //DONT WORK
+					if (choice == 2) { 
 						roled = false;
 						break;
 
@@ -101,7 +101,7 @@ public class Main {
 								String branchAddress = a.getBranchAddress();
 								System.out.println(id + ") "+branchName+", "+branchAddress);
 							}
-							System.out.println("enter 0 to go to previous");
+							System.out.println("Enter 0 to go to previous menu");
 							
 							Integer branchId = Integer.parseInt(scan.nextLine());
 							System.out.println("");
@@ -118,7 +118,7 @@ public class Main {
 							while (branched == true) {
 								System.out.println("1) Update the details of the Library");
 								System.out.println("2) Add copies of Book to the Branch");
-								System.out.println("3) Quit to Previous");
+								System.out.println("3) Quit to previous menu");
 								
 								Integer action = Integer.parseInt(scan.nextLine());
 								System.out.println("");
@@ -243,13 +243,20 @@ public class Main {
 						System.out.println("");
 						
 						BorrowerDAO borrowers = new BorrowerDAO();
-						Borrower borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
+						Borrower borrowerSelected;
 						
-						if (borrowerSelected == null) { //DOES NOT LET THE USER PASS WITH INCORRECT CARD NO
+						try {
+							borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
+						}  catch (SQLException e) {
+							System.out.println("This is not a valid Number, please enter a new number or quit: ");
+							cardNo = Integer.parseInt(scan.nextLine());
+							borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
+						} catch (IndexOutOfBoundsException e) {
 							System.out.println("This is not a valid Number, please enter a new number or quit: ");
 							cardNo = Integer.parseInt(scan.nextLine());
 							borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
 						}
+
 						
 						Boolean validBorrower = true; //use this properly
 						
@@ -258,7 +265,7 @@ public class Main {
 							//BORR1
 							System.out.println("1) Check out a book");
 							System.out.println("2) Return a book");
-							System.out.println("3) Quit to previous");
+							System.out.println("3) Quit to previous menu");
 							
 							int selection = Integer.parseInt(scan.nextLine());
 							System.out.println("");
@@ -266,7 +273,7 @@ public class Main {
 							if (selection == 3)  {
 								roled = false; // GOES BACK TO MAIN
 								validBorrower = false;
-								//don't work
+								break;
 							}
 							
 							action = selection == 1 ? "check" : "return";
@@ -292,15 +299,14 @@ public class Main {
 										String branchAddress = a.getBranchAddress();
 										System.out.println(id + ") "+branchName+", "+branchAddress);
 									}
-									System.out.println("enter 0 to go to previous");
+									System.out.println("Enter 0 to go to previous menu");
 									
 									Integer branchId = Integer.parseInt(scan.nextLine());
 									System.out.println("");
 									
 									if (branchId == 0) {
 										actioned = false; // goes back to BORR1
-										
-										//dont work
+										break;
 									}
 									
 									Boolean branched = true;
@@ -317,9 +323,15 @@ public class Main {
 											String author = a.getAuthor();
 											System.out.println(id + ") "+title+ " by "+author);
 										}
+										System.out.println("Enter 0 to go to previous menu");
 										System.out.println("Please Select a book to checkout");
 										Integer bookToSearch = Integer.parseInt(scan.nextLine());
 										System.out.println("");
+										
+										if (bookToSearch == 0) {
+											branched = false; // goes back to BORR1
+											break;
+										}
 										
 										
 										//UPDATE BOOK NO
@@ -381,6 +393,7 @@ public class Main {
 											//back to LIB3
 											branchId = null;
 											branched = false;
+											actioned = false;
 												
 										}
 									}
@@ -400,6 +413,8 @@ public class Main {
 									
 									BookLoanDAO bookLoans = new BookLoanDAO();
 									List<BookLoan> borrowerBooks = bookLoans.readBookLoansCardNo(cardNo);
+									
+
 									for (BookLoan a: borrowerBooks) {
 										Integer book = a.getBookId();
 										Integer branch = a.getBranchId();
@@ -408,9 +423,15 @@ public class Main {
 										Timestamp dueDate = a.getDueDate();
 										System.out.println(book + " taken out on " + dateOut + " due on " +dueDate); //add left join for title
 									}
-									System.out.println("\n Which book would you like to return");
+									
+									System.out.println("\n Which book would you like to return? Type 0 to return to previous menu.");
 									
 									Integer bookToSearch = Integer.parseInt(scan.nextLine());
+										
+									if (bookToSearch == 0) {
+										actioned = false;
+										break;
+									}
 									
 									//update copy
 									
