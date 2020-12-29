@@ -61,12 +61,16 @@ public class Librarian {
 				//LIST BRANCHES
 				BranchDAO branchdao = new BranchDAO();
 				List<Branch> branchs = branchdao.readBranchs();
+				Integer counter = 1;
 				for (Branch a: branchs) {
+					Integer selection = counter;
 					Integer id = a.getBranchId();
 					String branchName = a.getBranchName();
 					String branchAddress = a.getBranchAddress();
-					System.out.println(id + ") "+branchName+", "+branchAddress);
+					System.out.println(selection + ") "+branchName+", "+branchAddress);
+					counter++;
 				}
+				counter = 1;
 				System.out.println("Enter 0 to go to previous menu");
 				
 				Integer branchId;
@@ -85,6 +89,10 @@ public class Librarian {
 					System.out.println("Invalid choice, please try again.");
 					break;
 				}
+				
+				//get index for update
+				Integer useIndex = branchs.get(branchId - 1).getBranchId();
+				branchId = useIndex;
 				
 				Boolean branched = true;
 			
@@ -113,9 +121,9 @@ public class Librarian {
 						System.out.println("You have chosen to update the Branch with Branch Id: "
 								+ branchId
 								+ " and Branch Name: "
-								+ branchs.get(branchId-1).getBranchName()
+								+ branchdao.readBranchById(branchId).get(0).getBranchName()
 								+ " and Branch Address: "
-								+ branchs.get(branchId-1).getBranchAddress()
+								+ branchdao.readBranchById(branchId).get(0).getBranchAddress()
 								+ ".\n "
 								+ "Enter ‘quit’ at any prompt to cancel operation.");
 						
@@ -125,7 +133,7 @@ public class Librarian {
 								branched = false;
 								break;
 							} else if (newName.equals("N/A")) {
-								newName = branchs.get(branchId-1).getBranchName();
+								newName = branchdao.readBranchById(branchId).get(0).getBranchName();
 							}
 						System.out.println("Please enter new branch address or enter N/A for no change: ");
 						String newAddress = scan.nextLine();
@@ -133,13 +141,15 @@ public class Librarian {
 								branched = false;
 								break;
 							} else if (newAddress.equals("N/A")) {
-								newAddress = branchs.get(branchId-1).getBranchAddress();
+								newAddress = branchdao.readBranchById(branchId).get(0).getBranchAddress();
 							}
 						
-						branchs.get(branchId-1).setBranchName(newName);
-						branchs.get(branchId-1).setBranchAddress(newAddress);						
-						branchdao.updateBranch(branchs.get(branchId-1)); //updating the branch with new parameters
+						Branch BranchtoChange = branchdao.readBranchById(branchId).get(0);
+						BranchtoChange.setBranchName(newName);
+						BranchtoChange.setBranchAddress(newAddress);	
 						
+						branchdao.updateBranch(BranchtoChange); //updating the branch with new parameters
+					
 						System.out.println("Branch info has been updated");
 						branchId = null;
 						branched = false;

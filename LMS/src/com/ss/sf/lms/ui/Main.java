@@ -132,6 +132,8 @@ public class Main {
 
 //My approach was to build out the DAOs/Models as I built out the interface functionality of the console
 //Load up the DB with filler data to test
-//Built out Librarian and all the requiste clasess fro the Methods in the Console Interface
+//Built out Librarian and    ,all the requiste clasess fro the Methods in the Console Interface
 //Then Borrower
 //Then Admin
+//All the admin crud cases
+//Then I realized I needed to add try/catch exceptions all cross teh board
