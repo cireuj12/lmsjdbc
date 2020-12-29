@@ -168,9 +168,7 @@ public class Main {
 										String title = a.getTitle();
 										String author = a.getAuthor();
 										System.out.println(id + ") "+title+ " by "+author);
-										//then get copies for next menu
-										//branchId = null;
-										//branched = false;
+
 										//actually this goes back to LIB2 NOT LIB3
 									}
 									
@@ -203,10 +201,7 @@ public class Main {
 									branchId = null;
 									
 									/**DONE
-									 * get book copies DAO for # of copies
-									show number of copies for that book
-									take input enter new number of copies
-									update taken
+									 * 
 									*/
 								
 								}
@@ -279,8 +274,7 @@ public class Main {
 							action = selection == 1 ? "check" : "return";
 							Boolean actioned = true;
 							
-							
-							//This loop does not rerun
+						
 							while (actioned) {
 								
 								//check
@@ -376,12 +370,6 @@ public class Main {
 											
 											addLoan.setDueDate(ts);
 											
-//											System.out.println(addLoan.getBookId());
-//											System.out.println(addLoan.getBranchId());
-//											System.out.println(addLoan.getCardNo());
-//											System.out.println(addLoan.getDateOut());
-//											System.out.println(addLoan.getDueDate());
-											
 											bookloanDao.addBookLoan(addLoan);
 											
 											System.out.println("The book has been checked out and logged. ");
@@ -460,22 +448,28 @@ public class Main {
 									//to return to borrower menu
 									
 									actioned = false;
-									//don't work
-								}
-								
-								
-								
+								}			
 								//return
 								
 							}
 						}
 					
-					
-					//now access BorrowerDAO
-					
-					//access LoanDAO
 					break;
 				} case 2:  {//(roleSelection == 2) 
+					
+					Administrator session = new Administrator();
+					
+					session.active = true;
+					
+					while(session.active) {
+						session.launch();
+					}
+					
+					if (session.active == false) {
+						System.out.println("hit");
+						roled = false;
+					}
+					
 					/**
 					 * ADMIN SESSION
 					 * Add/Update/Delete/Read Book and Author
@@ -490,16 +484,13 @@ public class Main {
 				default: {
 					System.out.println("Please pick a valid choice");
 					roled = false;
-//					loggedIn = false; //this doesn't go back either
-//					continue;
+
 					break;
 				}
 			}//end of switch;
 
 			} while (roled != false);// roled!= false;
 			
-//			scan.close();
-//			System.out.close();
 			continue;
 		} while (true); // loop should always run
 
