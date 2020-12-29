@@ -43,6 +43,14 @@ public class BookDAO extends BaseDAO {
 				new Object[] {});
 	}
 	
+	public List<Book> readBookById(Integer bookId) throws ClassNotFoundException, SQLException { //slightly different
+		return read("select bookId, title, tbl_author.authorName, authID, pubId "
+				+ "from tbl_book "
+				+ "left join tbl_author "
+				+ "on tbl_book.authID = tbl_author.authorId where bookId = ?",
+				new Object[] {bookId});
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Book> readBooksbyBranch(Integer branchId) throws ClassNotFoundException, SQLException { //slightly different
 		return read("select tbl_book.bookId, title, tbl_author.authorName, authID, pubId "

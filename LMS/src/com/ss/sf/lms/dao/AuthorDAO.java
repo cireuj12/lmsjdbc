@@ -45,6 +45,14 @@ public class AuthorDAO extends BaseDAO<Author> { //NO TRY CATCH INSIDE OF DAO
 		//then return this
 	}
 	
+	public List<Author> readAuthorById(Integer authorId ) throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_author where authorId = ?", new Object[] {authorId});
+		
+		//read on base
+		//base return extract data
+		//then return this
+	}
+	
 	public List<Author> readAuthorsbyNameString(String authorName) throws ClassNotFoundException, SQLException { //slightly different
 		return read("select * from tbl_author where authorNAme = ? ", new Object[] {authorName});
 		

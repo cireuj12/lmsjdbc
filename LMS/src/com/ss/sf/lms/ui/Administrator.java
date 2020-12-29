@@ -9,8 +9,10 @@ import java.util.Scanner;
 
 import com.ss.sf.lms.dao.AuthorDAO;
 import com.ss.sf.lms.dao.BookDAO;
+import com.ss.sf.lms.dao.BranchDAO;
 import com.ss.sf.lms.domain.Author;
 import com.ss.sf.lms.domain.Book;
+import com.ss.sf.lms.domain.Branch;
 
 /**
  * @author ericju
@@ -89,7 +91,9 @@ public class Administrator {
 									bookInput = null;
 									break;
 								} else {
-									Book bookToChange = allBooks.get(bookSelection - 1 );
+									
+									//add select book by id
+									Book bookToChange = bookdao.readBookById(bookSelection).get(0);
 									System.out.println("You've selected " + bookToChange.getTitle());
 									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
 									//updatebyBookID, delete by BookID
@@ -146,7 +150,9 @@ public class Administrator {
 						}
 						break;
 					case 2:
-						//Authors UPDATE/DELETE /ADD 30min
+						
+						//Authors
+						//CRUD
 						AuthorDAO authordao = new AuthorDAO();
 						System.out.println("1) Find Author to Edit");
 						System.out.println("2) Add Author");
@@ -176,7 +182,8 @@ public class Administrator {
 									authorInput = null;
 									break;
 								} else {
-									Author authorToChange = allAuthors.get(authorSelection - 1 );
+
+									Author authorToChange = authordao.readAuthorById(authorSelection).get(0);
 									System.out.println("You've selected " + authorToChange.getAuthorName());
 									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
 		
@@ -237,10 +244,113 @@ public class Administrator {
 							
 						break;
 					case 3:
-						//Publishers UPDATE/DELETE /ADD 1hr 
+						//Publishers 
+						//CRUD 1HR
+						//auto increment for DB added
+						
+						//NEED TO CREATE PUBLISHER OBJECT AND DAO
+						
 						break;
 					case 4:
-						//Library Branches UPDATE/DELETE /ADD 1hr
+						//Library Branches 
+						// CRUD
+						//auto increment for DB added
+						
+						BranchDAO branchdao = new BranchDAO();
+						System.out.println("1) Find Branch to Edit");
+						System.out.println("2) Add Branch");
+						System.out.println("3) Return to previous menu\n");
+						
+						Integer branchInput = Integer.parseInt(scan1.nextLine());
+						
+						while (branchInput != null) {
+							switch (branchInput) {
+							case 3: //previous menu
+								selected = false;
+								branchInput = null;
+								break; //
+							case 1: //Find all branchs;
+								List<Branch> allBranchs = branchdao.readBranchs();
+								for (Branch a : allBranchs) {
+									Integer id = a.getBranchId();
+									String branch = a.getBranchName();
+									String address = a.getBranchAddress();
+									System.out.println(id + ") " + branch +" , " + address);
+								}
+								System.out.println(
+										"\nSelect which branch to change. Or type 0 to return to previous menu.");
+								
+								Integer branchSelection = Integer.parseInt(scan1.nextLine());
+								
+								if (branchSelection == 0) { //previous menu
+									branchInput = null;
+									break;
+								} else {
+									//Author authorToChange = authordao.readAuthorById(authorSelection).get(0);
+									Branch branchToChange = branchdao.readBranchById(branchSelection).get(0);
+									System.out.println("You've selected " + branchToChange.getBranchName() + " , " + branchToChange.getBranchAddress());
+									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
+		
+									Integer action2 = Integer.parseInt(scan1.nextLine());
+									if (action2 == 0) { //previous menu
+										branchInput = null;
+										break;
+									} else if (action2 == 1) { //UPDATE keep branch ID=
+										System.out.println("Currently:"+branchToChange.getBranchName()+". What do you want to change the branch name to?\n");
+										branchToChange.setBranchName(scan1.nextLine());
+										System.out.println("Currently:"+branchToChange.getBranchAddress()+". What do you want to change the branch address to?\n");
+										branchToChange.setBranchAddress(scan1.nextLine());
+
+										
+										branchdao.updateBranch(branchToChange); //send update to database
+										
+										System.out.println("/n The branch has been updated!");
+										
+									} else { //DELETE
+										System.out.println("Type yes to confirm deletion");
+										String confirm1 = scan1.nextLine();
+										if (confirm1.equals("yes")) { // compare string data not string object
+											branchdao.deleteBranch(branchToChange);
+											System.out.println("This branch has been deleted\n");
+										} else {
+											System.out.println("Reverting...\n");
+											branchInput = null;
+											break;
+										}
+									}
+								}
+								//done with update/delete go back to previous menu
+								selected = false;
+								branchInput = null;
+								break;
+								
+								
+							case 2: //Add author
+								Branch branchToAdd = new Branch();
+
+								System.out.println("What is the name of the branch?\n");
+								String branchName = scan1.nextLine();
+								branchToAdd.setBranchName(branchName);
+								
+								System.out.println("What is the address of the branch?\n");
+								String addressName = scan1.nextLine();
+								branchToAdd.setBranchAddress(addressName);
+								
+								branchdao.addBranch(branchToAdd);
+								
+								System.out.println("The branch has been added.\n");
+								selected = false;
+								branchInput = null;
+								break;
+
+							}
+						}
+						
+						
+						/**
+						 * CRUD BRANCH 
+						 * COMPLETE
+						 */
 						break;
 					case 5:
 						//Borrowers UPDATE/DELETE /ADD 1hr

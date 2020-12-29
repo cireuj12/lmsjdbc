@@ -10,9 +10,10 @@ import com.ss.sf.lms.domain.Branch;
 public class BranchDAO extends BaseDAO {
 
 	
-	public void addBranch(Branch branch) throws ClassNotFoundException, SQLException {
-		save("Insert into tbl_library_branch (branchName) values (?)", 
-				new Object[] {branch.getBranchName()});
+	public void addBranch(Branch branch) throws ClassNotFoundException, SQLException { //primary key should auto increment
+		save("Insert into tbl_library_branch (branchName, branchAddress) values (? , ?) ", //always have commas
+				new Object[] {branch.getBranchName(),
+						branch.getBranchAddress()});
 	}
 	  
 	public void updateBranch(Branch branch) throws ClassNotFoundException, SQLException{
@@ -29,6 +30,11 @@ public class BranchDAO extends BaseDAO {
 	
 	public List<Branch> readBranchs() throws ClassNotFoundException, SQLException { //slightly different
 		return read("select * from tbl_library_branch", new Object[] {});
+	
+	}
+	
+	public List<Branch> readBranchById(Integer branchId ) throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_library_branch where branchId = ?", new Object[] {branchId});
 	
 	}
 	
