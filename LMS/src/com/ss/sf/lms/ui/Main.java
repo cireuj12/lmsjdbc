@@ -35,7 +35,13 @@ public class Main {
 			System.out.println("4) Close");
 			
 			
-			Integer roleSelection = Integer.parseInt(scan.nextLine());
+			Integer roleSelection;
+				try {
+					roleSelection = Integer.parseInt(scan.nextLine());
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid choice, please try again."); //Insures Integer
+					roleSelection = Integer.parseInt(scan.nextLine());
+				}
 			System.out.println("");
 			
 			

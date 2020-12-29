@@ -36,11 +36,17 @@ public class Librarian {
 		System.out.println("2) Quit to previous menu");
 		
 		Scanner scan = new Scanner(System.in);
-		Integer choice = Integer.parseInt(scan.nextLine());
 		
-		if (choice == 2) { 
+		Integer choice;
+		try {
+			choice = Integer.parseInt(scan.nextLine());
+		} catch (NumberFormatException e1) {
+			System.out.println("Invalid choice, please try again."); //Insures Integer
+			choice = Integer.parseInt(scan.nextLine());
+		}
+		
+		if (choice == 2 || choice > 2) { 
 			active = false;
-
 		};
 		
 		Boolean session = true;
@@ -50,7 +56,7 @@ public class Librarian {
 				session = false;
 				break;
 			} 
-			else {
+			else if (choice == 1) {
 				//LIB2
 				//LIST BRANCHES
 				BranchDAO branchdao = new BranchDAO();
@@ -63,11 +69,20 @@ public class Librarian {
 				}
 				System.out.println("Enter 0 to go to previous menu");
 				
-				Integer branchId = Integer.parseInt(scan.nextLine());
-				System.out.println("");
+				Integer branchId;
+					try {
+						branchId = Integer.parseInt(scan.nextLine());
+					} catch (NumberFormatException e) {
+						System.out.println("Invalid choice, please try again."); //Insures Integer
+						branchId = Integer.parseInt(scan.nextLine());
+					}
 				
+				System.out.println("");			
 				if (branchId == 0) {
 					session = false;
+					break;
+				} else if (branchId > branchs.size() || branchId < 0) {
+					System.out.println("Invalid choice, please try again.");
 					break;
 				}
 				
@@ -79,7 +94,13 @@ public class Librarian {
 					System.out.println("2) Add copies of Book to the Branch");
 					System.out.println("3) Quit to previous menu");
 					
-					Integer action = Integer.parseInt(scan.nextLine());
+					Integer action;
+					try {
+						action = Integer.parseInt(scan.nextLine());
+					} catch (NumberFormatException e) {
+						System.out.println("Invalid choice, please try again."); //Insures Integer
+						action = Integer.parseInt(scan.nextLine());
+					}
 					System.out.println("");
 					
 					
@@ -145,7 +166,14 @@ public class Librarian {
 						
 						System.out.println("Existing number of copies: "+numOfCopies);
 						System.out.println("Enter new number of copies:");
-						Integer newCopies = Integer.parseInt(scan.nextLine());
+						
+						Integer newCopies;
+						try {
+							newCopies = Integer.parseInt(scan.nextLine());
+						} catch (NumberFormatException e) {
+							System.out.println("Invalid choice, please try again."); //Insures Integer
+							newCopies = Integer.parseInt(scan.nextLine());
+						}
 						
 						BookSelection.setNoOfCopies(newCopies); //set new copy in model
 						copiesofBook.updateBookCopy(BookSelection); //set new copy in DB from model
@@ -159,6 +187,9 @@ public class Librarian {
 					}
 				}
 				//break or continue
+			} else {
+				System.out.println("Invalid choice, please try again. \n");
+				break;
 			}
 		} while(session == true) ;
 		
