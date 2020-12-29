@@ -9,15 +9,19 @@ import com.ss.sf.lms.domain.Borrower;
 
 public class BorrowerDAO extends BaseDAO {
 
-	public void addBorrower(Borrower borrower) throws ClassNotFoundException, SQLException {
-		save("Insert into tbl_borrower (cardNo, name, authID, pubId ) values (?)", 
-				new Object[] {borrower.getCardNo(),
-								borrower.getName()});
+	public void addBorrower(Borrower borrower) throws ClassNotFoundException, SQLException { //auto increment
+		save("Insert into tbl_borrower (name, address, phone ) values (?, ?, ?)", 
+				new Object[] {
+								borrower.getName(),
+								borrower.getAddress(),
+								borrower.getPhone()});
 	}
 	  
 	public void updateBorrower(Borrower borrower) throws ClassNotFoundException, SQLException{
-		save("update tbl_borrower set name = ? where cardNo = ?", 
+		save("update tbl_borrower set name = ?, address = ?, phone = ? where cardNo = ?", 
 				new Object[] {borrower.getName(),
+								borrower.getAddress(),
+								borrower.getPhone(),
 								borrower.getCardNo()});
 	}
 	
@@ -28,6 +32,11 @@ public class BorrowerDAO extends BaseDAO {
 	
 	public List<Borrower> readBorrowerById(Integer cardNo) throws ClassNotFoundException, SQLException { //slightly different
 		return read("select * from tbl_borrower where cardNo = ?", new Object[] {cardNo});
+	
+	}
+	
+	public List<Borrower> readBorrowers() throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_borrower", new Object[] {});
 	
 	}
 	
@@ -42,6 +51,8 @@ public class BorrowerDAO extends BaseDAO {
 			
 			borrower.setCardNo(rs.getInt("cardNo"));
 			borrower.setName(rs.getString("name"));
+			borrower.setAddress(rs.getString("address"));
+			borrower.setPhone(rs.getString("phone"));
 			borrowers.add(borrower);
 			// YOU CAN DO CONSTRUCTOR //1:41
 		};

@@ -9,10 +9,12 @@ import java.util.Scanner;
 
 import com.ss.sf.lms.dao.AuthorDAO;
 import com.ss.sf.lms.dao.BookDAO;
+import com.ss.sf.lms.dao.BorrowerDAO;
 import com.ss.sf.lms.dao.BranchDAO;
 import com.ss.sf.lms.domain.Author;
 import com.ss.sf.lms.domain.Book;
 import com.ss.sf.lms.domain.Branch;
+import com.ss.sf.lms.domain.Borrower;
 
 /**
  * @author ericju
@@ -353,7 +355,108 @@ public class Administrator {
 						 */
 						break;
 					case 5:
-						//Borrowers UPDATE/DELETE /ADD 1hr
+						//Borrowers
+						//CRUD
+						//db updated to autoincrement
+						
+						BorrowerDAO borrowerdao = new BorrowerDAO();
+						System.out.println("1) Find Borrower to Edit");
+						System.out.println("2) Add Borrower");
+						System.out.println("3) Return to previous menu\n");
+						
+						Integer borrowerInput = Integer.parseInt(scan1.nextLine());
+						
+						while (borrowerInput != null) {
+							switch (borrowerInput) {
+							case 3: //previous menu
+								selected = false;
+								borrowerInput = null;
+								break; //
+							case 1: //Find all borrowers;
+								List<Borrower> allBorrowers = borrowerdao.readBorrowers();
+								for (Borrower a : allBorrowers) {
+									Integer id = a.getCardNo();
+									String name = a.getName();
+									String address = a.getAddress();
+									String phone = a.getPhone();
+									System.out.println(id + ") " + name +" , " + address +" , " + phone);
+								}
+								System.out.println(
+										"\nSelect which borrower to change. Or type 0 to return to previous menu.");
+								
+								Integer borrowerSelection = Integer.parseInt(scan1.nextLine());
+								
+								if (borrowerSelection == 0) { //previous menu
+									borrowerInput = null;
+									break;
+								} else {
+								
+									Borrower borrowerToChange = borrowerdao.readBorrowerById(borrowerSelection).get(0);
+									System.out.println("You've selected " + borrowerToChange.getName() + " , " + borrowerToChange.getAddress() + " , " + borrowerToChange.getPhone());
+									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
+		
+									Integer action3 = Integer.parseInt(scan1.nextLine());
+									if (action3 == 0) { //previous menu
+										borrowerInput = null;
+										break;
+									} else if (action3 == 1) { 
+										System.out.println("Currently:"+borrowerToChange.getName()+". What do you want to change the name to?\n");
+										borrowerToChange.setName(scan1.nextLine());
+										System.out.println("Currently:"+borrowerToChange.getAddress()+". What do you want to change the address to?\n");
+										borrowerToChange.setAddress(scan1.nextLine());
+										System.out.println("Currently:"+borrowerToChange.getPhone()+". What do you want to change the phone to?\n");
+										borrowerToChange.setPhone(scan1.nextLine());
+
+										
+										borrowerdao.updateBorrower(borrowerToChange); //send update to database
+										
+										System.out.println("/n The borrower has been updated!");
+										
+									} else { //DELETE
+										System.out.println("Type yes to confirm deletion");
+										String confirm2 = scan1.nextLine();
+										if (confirm2.equals("yes")) { // compare string data not string object
+											borrowerdao.deleteBorrower(borrowerToChange);
+											System.out.println("This borrower has been deleted\n");
+										} else {
+											System.out.println("Reverting...\n");
+											borrowerInput = null;
+											break;
+										}
+									}
+								}
+								//done with update/delete go back to previous menu
+								selected = false;
+								borrowerInput = null;
+								break;
+								
+								
+							case 2: //Add author
+								Borrower borrowerToAdd = new Borrower();
+
+								System.out.println("What is the name of the borrower?\n");
+								String borrowerName = scan1.nextLine();
+								borrowerToAdd.setName(borrowerName);
+								
+								System.out.println("What is the address of the borrower?\n");
+								String addressName = scan1.nextLine();
+								borrowerToAdd.setAddress(addressName);
+								
+								System.out.println("What is the phone # of the borrower?\n");
+								String phone = scan1.nextLine();
+								borrowerToAdd.setPhone(phone);
+								
+								borrowerdao.addBorrower(borrowerToAdd);
+								
+								System.out.println("The borrower has been added.\n");
+								selected = false;
+								borrowerInput = null;
+								break;
+
+							}
+						}
+						
+						
 						break;
 					case 6:
 						//Override Due Date UPDATE
