@@ -4,17 +4,22 @@
 package com.ss.sf.lms.ui;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 
 import com.ss.sf.lms.dao.AuthorDAO;
 import com.ss.sf.lms.dao.BookDAO;
+import com.ss.sf.lms.dao.BookLoanDAO;
 import com.ss.sf.lms.dao.BorrowerDAO;
 import com.ss.sf.lms.dao.BranchDAO;
+import com.ss.sf.lms.dao.BookLoanDAO;
 import com.ss.sf.lms.domain.Author;
 import com.ss.sf.lms.domain.Book;
 import com.ss.sf.lms.domain.Branch;
 import com.ss.sf.lms.domain.Borrower;
+import com.ss.sf.lms.domain.BookLoan;
 
 /**
  * @author ericju
@@ -36,9 +41,9 @@ public class Administrator {
 	public void launch() throws ClassNotFoundException, SQLException {
 		
 			System.out.println("Which table would you like to change?");
-			System.out.println("1) Books");
+			System.out.println("1) Books(Incomplete)");
 			System.out.println("2) Authors");
-			System.out.println("3) Publishers");
+			System.out.println("3) Publishers(Incomplete)");
 			System.out.println("4) Library Branches");
 			System.out.println("5) Borrowers");
 			System.out.println("6) Override Due Date");
@@ -453,13 +458,105 @@ public class Administrator {
 								borrowerInput = null;
 								break;
 
-							}
+							}//end of switch
 						}
 						
-						
+						/**
+						 * CRUD BORROWER 
+						 * COMPLETE
+						 */
 						break;
 					case 6:
 						//Override Due Date UPDATE
+						
+						BookLoanDAO bookloandao = new BookLoanDAO();
+						System.out.println("1) Find Due Date to Override");
+						System.out.println("2) Return to previous menu\n");
+						
+						Integer bookLoanInput = Integer.parseInt(scan1.nextLine());
+						
+						
+						while(bookLoanInput != null) {
+							
+							switch (bookLoanInput) {
+							case 2: //previous menu
+								selected = false;
+								bookLoanInput = null;
+								break; //
+							case 1: //Find all bookLoans;
+								List<BookLoan> allLoans = bookloandao.readBookLoans();
+								Integer selection = 1;
+								for (BookLoan a : allLoans) {
+									Integer id = selection;
+									Integer cardNo = a.getCardNo();
+									Integer branch = a.getBranchId();
+									Integer book = a.getBookId();
+									Timestamp dueDate = a.getDueDate();
+									System.out.println(id +") " + cardNo + " took out " + book +" from " + branch +", due on " + dueDate);
+									selection++;
+								}
+								selection = 1; // set it back to one after loop  
+								//get that index
+								System.out.println(
+										"\nSelect which due date to change. Or type 0 to return to previous menu.");
+								
+								Integer changeDate = Integer.parseInt(scan1.nextLine());
+								
+								if (changeDate == 0) { //previous menu
+									bookLoanInput = null;
+									break;
+								} else {
+								
+									BookLoan loanToChange = allLoans.get(changeDate - 1); //minus one is needed here because indexing into List not key
+									System.out.println("You've selected book " + loanToChange.getBookId() 
+														+ " , borrower:" 
+														+ loanToChange.getCardNo() 
+														+ " , " 
+														+ loanToChange.getBranchId()
+														+ " due on:"
+														+ loanToChange.getDueDate());
+									System.out.println("Enter 1 to Update 0 to return to previous menu ");
+		
+									Integer action4 = Integer.parseInt(scan1.nextLine());
+									if (action4 == 0) { //previous menu
+										bookLoanInput = null;
+										break;
+									} else if (action4 == 1) { 
+										System.out.println("Currently:"+loanToChange.getDueDate()+". How many days do you want to add to the due date?\n");
+										Integer addToTimestamp = Integer.parseInt(scan1.nextLine());
+										
+										//logic to add to current due date
+										Timestamp currentDueDate = loanToChange.getDueDate();
+										Calendar cal = Calendar.getInstance();
+										cal.setTimeInMillis(currentDueDate.getTime());
+										cal.add(Calendar.DAY_OF_WEEK, addToTimestamp);
+										Timestamp newTime = new Timestamp(cal.getTime().getTime());
+										
+										loanToChange.setDueDate(newTime);
+
+										
+										bookloandao.updateBookLoan(loanToChange); //send update to database
+										
+										System.out.println("/n The due date has been updated!");
+										
+										//A better version would be to manually input due date
+										
+									} 
+								}
+								//done with update/delete go back to previous menu
+								selected = false;
+								bookLoanInput = null;
+								break;
+								
+
+							}//end of switch
+						}
+						
+						/**
+						 * UPDATE BORROWER LOAN 
+						 * COMPLETE
+						 */
+						
 						break;
 					
 					}

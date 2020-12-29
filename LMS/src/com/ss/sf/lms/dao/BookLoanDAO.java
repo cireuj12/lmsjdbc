@@ -18,11 +18,12 @@ public class BookLoanDAO extends BaseDAO {
 	}
 	  
 	public void updateBookLoan(BookLoan bookLoan) throws ClassNotFoundException, SQLException{
-		save("update tbl_book_loans set dateOut = ? setdueDate = ? where cardNo = ? and bookId = ?",
-				new Object[] {bookLoan.getDateOut(),
+		save("update tbl_book_loans set dueDate = ? where cardNo = ? and bookId = ? and branchId = ?",
+				new Object[] {
 								bookLoan.getDueDate(),
 								bookLoan.getCardNo(),
-								bookLoan.getBookId()});
+								bookLoan.getBookId(),
+								bookLoan.getBranchId()});
 	}
 	
 	public void deleteBookLoan(BookLoan bookLoan) throws ClassNotFoundException, SQLException{
@@ -34,6 +35,16 @@ public class BookLoanDAO extends BaseDAO {
 	
 	public List<BookLoan> readBookLoansCardNo(Integer cardNo) throws ClassNotFoundException, SQLException { //slightly different
 		return read("select * from tbl_book_loans where cardNo = ?", new Object[] {cardNo});
+	
+	}
+	
+	public List<BookLoan> readBookLoansByIDs(Integer cardNo, Integer branchId, Integer bookId ) throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_book_loans where cardNo = ? and branchId = ? and bookId = ?", new Object[] {cardNo, branchId, bookId});
+	
+	}
+	
+	public List<BookLoan> readBookLoans() throws ClassNotFoundException, SQLException { //slightly different
+		return read("select * from tbl_book_loans", new Object[] {});
 	
 	}
 	

@@ -472,11 +472,8 @@ public class Main {
 					
 					/**
 					 * ADMIN SESSION
-					 * Add/Update/Delete/Read Book and Author
-											Add/Update/Delete/Read Genres
+					 * Add Book
 											Add/Update/Delete/Read Publishers
-											Add/Update/Delete/Read Library Branches
-											Add/Update/Delete/Read Borrowers
 											Over-ride Due Date for a Book Loan
 					 */
 					break;
