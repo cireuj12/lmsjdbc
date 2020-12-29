@@ -41,7 +41,16 @@ public class BorrowerSession {
 		System.out.println("Enter your Card Number: ");
 		
 		Scanner scan = new Scanner(System.in);
-		Integer cardNo = Integer.parseInt(scan.nextLine());
+		
+		Integer cardNo;
+		try {
+			cardNo = Integer.parseInt(scan.nextLine());
+		} catch (NumberFormatException e1) {
+			// TODO Auto-generated catch block
+			System.out.println("Invalid choice, please try again."); //ensures Integer
+			cardNo = Integer.parseInt(scan.nextLine());
+		}
+		
 		System.out.println("");
 		
 		BorrowerDAO borrowers = new BorrowerDAO();
@@ -61,7 +70,7 @@ public class BorrowerSession {
 				System.out.println("This is not a valid Number, please enter a new number or quit: ");
 				cardNo = Integer.parseInt(scan.nextLine());
 				borrowerSelected = borrowers.readBorrowerById(cardNo).get(0);
-			}
+			} 
 			
 			
 			Boolean validBorrower = true; //use this properly
@@ -73,10 +82,16 @@ public class BorrowerSession {
 				System.out.println("2) Return a book");
 				System.out.println("3) Quit to previous menu");
 				
-				int selection = Integer.parseInt(scan.nextLine());
+				int selection;
+				try {
+					selection = Integer.parseInt(scan.nextLine());
+				} catch (NumberFormatException e1) {
+					System.out.println("Invalid choice, please try again."); //ensures Integer
+					selection = Integer.parseInt(scan.nextLine());
+				}
 				System.out.println("");
 				
-				if (selection == 3)  {
+				if (selection == 3 || selection > 3 )  {
 					active = false; // GOES BACK TO MAIN
 					validBorrower = false;
 					break;
@@ -95,7 +110,7 @@ public class BorrowerSession {
 					List<Branch> branchs = branchdao.readBranchs();
 					
 					
-					//CHECKING OUT
+					//BORROWER CHECKING OUT BOOK
 					if (action == "check") {
 						
 						for (Branch a: branchs) {
@@ -106,10 +121,16 @@ public class BorrowerSession {
 						}
 						System.out.println("0) Quit to previous menu");
 						
-						Integer branchId = Integer.parseInt(scan.nextLine());
+						Integer branchId;
+						try {
+							branchId = Integer.parseInt(scan.nextLine());
+						} catch (NumberFormatException e1) {
+							System.out.println("Invalid choice, please try again.");
+							branchId = Integer.parseInt(scan.nextLine());
+						}
 						System.out.println("");
 						
-						if (branchId == 0) {
+						if (branchId == 0 || branchId < 0) {
 							actioned = false; // goes back to BORR1
 							break;
 						}
@@ -130,10 +151,17 @@ public class BorrowerSession {
 							}
 							System.out.println("0) Quit to previous menu");
 							System.out.println("Please Select a book to checkout");
-							Integer bookToSearch = Integer.parseInt(scan.nextLine());
+							
+							Integer bookToSearch;
+							try {
+								bookToSearch = Integer.parseInt(scan.nextLine());
+							} catch (NumberFormatException e1) {
+								System.out.println("Invalid choice, please try again.");
+								bookToSearch = Integer.parseInt(scan.nextLine());
+							}
 							System.out.println("");
 							
-							if (bookToSearch == 0) {
+							if (bookToSearch == 0 || bookToSearch < 0) {
 								branched = false; // goes back to BORR1
 								break;
 							}
@@ -191,7 +219,7 @@ public class BorrowerSession {
 							}
 						}
 					} else if (action == "return") {
-						
+						//BORROWER RETURNING BOOK
 						BookLoanDAO bookLoans = new BookLoanDAO();
 						List<BookLoan> borrowerBooks = bookLoans.readBookLoansCardNo(cardNo);
 						
@@ -206,14 +234,20 @@ public class BorrowerSession {
 						
 						System.out.println("\n Which book would you like to return? Type 0 to return to previous menu.");
 						
-						Integer bookToSearch = Integer.parseInt(scan.nextLine());
+						Integer bookToSearch;
+						try {
+							bookToSearch = Integer.parseInt(scan.nextLine());
+						} catch (NumberFormatException e) {
+							System.out.println("Invalid choice, please try again.");
+							bookToSearch = Integer.parseInt(scan.nextLine());
+						}
 							
-						if (bookToSearch == 0) {
+						if (bookToSearch == 0 || bookToSearch < 0) {
 							actioned = false;
 							break;
 						}
 						
-						//update copy
+						//update copies from return
 						
 						BookCopyDAO bookUpdate = new BookCopyDAO();
 						BookCopy BookSelection = bookUpdate.readBookbyId(bookToSearch).get(0);

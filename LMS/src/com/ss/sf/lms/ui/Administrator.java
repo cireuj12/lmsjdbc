@@ -54,9 +54,15 @@ public class Administrator {
 			
 			Scanner scan1 = new Scanner(System.in);
 			
-			Integer input = Integer.parseInt(scan1.nextLine());
+			Integer input;
+			try {
+				input = Integer.parseInt(scan1.nextLine());
+			} catch (NumberFormatException e) {
+				System.out.println("Invalid choice, please try again."); //ensures Integer
+				input = Integer.parseInt(scan1.nextLine());
+			}
 			
-			if (input == 0 ) {
+			if (input == 0 || input > 6 ) {
 				active = false;
 			} else {
 				Boolean selected = true;
@@ -71,7 +77,13 @@ public class Administrator {
 						System.out.println("2) Add Book");
 						System.out.println("3) Return to previous menu\n");
 						
-						Integer bookInput = Integer.parseInt(scan1.nextLine());
+						Integer bookInput;
+						try {
+							bookInput = Integer.parseInt(scan1.nextLine());
+						} catch (NumberFormatException e) {
+							System.out.println("Invalid choice, please try again."); //ensures Integer
+							bookInput = Integer.parseInt(scan1.nextLine());
+						}
 						
 						while (bookInput != null) {
 							switch (bookInput) {
@@ -94,9 +106,15 @@ public class Administrator {
 								System.out.println(
 										"\nSelect which book to change. Or type 0 to return to previous menu.");
 								
-								Integer bookSelection = Integer.parseInt(scan1.nextLine());
+								Integer bookSelection;
+								try {
+									bookSelection = Integer.parseInt(scan1.nextLine());
+								} catch (NumberFormatException e) {
+									System.out.println("Invalid choice, please try again."); //ensures Integer
+									bookSelection = Integer.parseInt(scan1.nextLine());
+								}
 								
-								if (bookSelection == 0) { //previous menu
+								if (bookSelection == 0 || bookSelection > allBooks.size()) { //previous menu
 									bookInput = null;
 									break;
 								} else {
@@ -106,17 +124,38 @@ public class Administrator {
 									System.out.println("You've selected " + bookToChange.getTitle());
 									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
 									//updatebyBookID, delete by BookID
-									Integer action = Integer.parseInt(scan1.nextLine());
-									if (action == 0) { //previous menu
+									
+									Integer action;
+									try {
+										action = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again."); //ensures Integer
+										action = Integer.parseInt(scan1.nextLine());
+									}
+									
+									if (action == 0 || action > 2) { //previous menu
 										bookInput = null;
 										break;
 									} else if (action == 1) { //UPDATE keep book ID=
 										System.out.println("Currently:"+bookToChange.getTitle()+". What do you want to change the title to?\n");
 										bookToChange.setTitle(scan1.nextLine());
-										System.out.println("What do you want to change the Author ID to?\n");
-										bookToChange.setAuthId(Integer.parseInt(scan1.nextLine()));
-										System.out.println("What do you want to change the Publisher ID to?\n");
-										bookToChange.setPubId(Integer.parseInt(scan1.nextLine()));
+										System.out.println("Currently:"+bookToChange.getAuthId()+". What do you want to change the Author ID to?\n");
+										
+											try {
+												bookToChange.setAuthId(Integer.parseInt(scan1.nextLine()));
+											} catch (NumberFormatException e) {
+												System.out.println("Invalid choice, please try again.");
+												bookToChange.setAuthId(Integer.parseInt(scan1.nextLine()));
+											}
+											
+										System.out.println("Currently:"+bookToChange.getPubId()+". What do you want to change the Publisher ID to?\n");
+										
+											try {
+												bookToChange.setPubId(Integer.parseInt(scan1.nextLine()));
+											} catch (NumberFormatException e) {
+												System.out.println("Invalid choice, please try again.");
+												bookToChange.setPubId(Integer.parseInt(scan1.nextLine()));
+											}
 										
 										bookdao.updateBook(bookToChange); //send update to database
 										
@@ -144,23 +183,36 @@ public class Administrator {
 							 * COMPLETE
 							 */
 								
-								
-							case 2: //Add book
+							//Add book to DB	
+							case 2: 
 								Book bookToAdd = new Book();
 								
-								//AUTO INCREMENT FIXED
 								System.out.println("What is the title of the book?\n");
 								String bookName = scan1.nextLine();
 								bookToAdd.setTitle(bookName);
 								
-								System.out.println("What is the author id of the book? The author must be in thee database.\n");
-								Integer authorId = Integer.parseInt(scan1.nextLine());
+								System.out.println("What is the author id of the book? The author must be in the database.\n");
+								Integer authorId;
+									try {
+										authorId = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										authorId = Integer.parseInt(scan1.nextLine());
+									}
 								bookToAdd.setAuthId(authorId);
 								
 								System.out.println("What is the publisher id of the book? The publisher must be in the database.\n");
-								Integer pubId = Integer.parseInt(scan1.nextLine());
+								
+								Integer pubId;
+									try {
+										pubId = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										pubId = Integer.parseInt(scan1.nextLine());
+									}
 								bookToAdd.setPubId(pubId);
 								
+								//Add new book to DB
 								bookdao.addBook(bookToAdd);
 								
 								System.out.println("The book has been added.\n");
@@ -168,20 +220,23 @@ public class Administrator {
 								bookInput = null;
 								break;
 								
-
+							default: 
+								selected = false;
+								bookInput = null;
+								break;
 							}
 						}
 						break;
+					
+					//Authors DB
 					case 2:
 						
-						//Authors
-						//CRUD
 						AuthorDAO authordao = new AuthorDAO();
 						System.out.println("1) Find Author to Edit");
 						System.out.println("2) Add Author");
 						System.out.println("3) Return to previous menu\n");
 						
-						Integer authorInput = Integer.parseInt(scan1.nextLine());
+						Integer authorInput = Integer.parseInt(scan1.nextLine());//break is below
 						
 						while (authorInput != null) {
 							switch (authorInput) {
@@ -199,10 +254,16 @@ public class Administrator {
 								System.out.println(
 										"\nSelect which author to change. Or type 0 to return to previous menu.");
 								
-								Integer authorSelection = Integer.parseInt(scan1.nextLine());
+								Integer authorSelection;
+									try {
+										authorSelection = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										authorSelection = Integer.parseInt(scan1.nextLine());
+									}
 								
-								if (authorSelection == 0) { //previous menu
-									authorInput = null;
+								if (authorSelection == 0 || authorSelection > allAuthors.size()) { //previous menu
+									authorInput = null; 
 									break;
 								} else {
 
@@ -210,17 +271,23 @@ public class Administrator {
 									System.out.println("You've selected " + authorToChange.getAuthorName());
 									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
 		
-									Integer action1 = Integer.parseInt(scan1.nextLine());
+									Integer action1;
+										try {
+											action1 = Integer.parseInt(scan1.nextLine());
+										} catch (NumberFormatException e) {
+											System.out.println("Invalid choice, please try again.");
+											action1 = Integer.parseInt(scan1.nextLine());
+										}
+									
 									if (action1 == 0) { //previous menu
 										authorInput = null;
 										break;
+										
 									} else if (action1 == 1) { //UPDATE keep author ID=
 										System.out.println("Currently:"+authorToChange.getAuthorName()+". What do you want to change the author to?\n");
 										authorToChange.setAuthorName(scan1.nextLine());
-
-										
+							
 										authordao.updateAuthor(authorToChange); //send update to database
-										
 										System.out.println("/n The author has been updated!");
 										
 									} else { //DELETE
@@ -255,17 +322,18 @@ public class Administrator {
 								selected = false;
 								authorInput = null;
 								break;
+								
+							default:
+								selected = false;
+								authorInput = null;
+								break;
 
 							}
 						}
-						
-						
-						/**
-						 * CRUD AUTHOR 
-						 * COMPLETE
-						 */
 							
 						break;
+						
+					//Publisher DB
 					case 3:
 						PublisherDAO publisherdao = new PublisherDAO();
 						System.out.println("1) Find Publisher to Edit");
@@ -292,9 +360,15 @@ public class Administrator {
 								System.out.println(
 										"\nSelect which Publisher to change. Or type 0 to return to previous menu.");
 								
-								Integer publisherSelection = Integer.parseInt(scan1.nextLine());
+								Integer publisherSelection;
+									try {
+										publisherSelection = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										publisherSelection = Integer.parseInt(scan1.nextLine());
+									}
 								
-								if (publisherSelection == 0) { //previous menu
+								if (publisherSelection == 0 || publisherSelection > allPublishers.size()) { //previous menu
 									publisherInput = null;
 									break;
 								} else {
@@ -303,8 +377,15 @@ public class Administrator {
 									System.out.println("You've selected " + publisherToChange.getPublisherName() + " , " + publisherToChange.getPublisherAddress() + " , " + publisherToChange.getPublisherPhone());
 									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
 		
-									Integer action5 = Integer.parseInt(scan1.nextLine());
-									if (action5 == 0) { //previous menu
+									Integer action5;
+										try {
+											action5 = Integer.parseInt(scan1.nextLine());
+										} catch (NumberFormatException e) {
+											System.out.println("Invalid choice, please try again.");
+											action5 = Integer.parseInt(scan1.nextLine());
+										}
+									
+									if (action5 == 0 || action5 > 2) { //previous menu
 										publisherInput = null;
 										break;
 									} else if (action5 == 1) { 
@@ -339,7 +420,7 @@ public class Administrator {
 								break;
 								
 								
-							case 2: //Add author
+							case 2: //Add publisher
 								Publisher publisherToAdd = new Publisher();
 
 								System.out.println("What is the name of the publisher?\n");
@@ -360,15 +441,19 @@ public class Administrator {
 								selected = false;
 								publisherInput = null;
 								break;
+								
+							default:
+								selected = false;
+								publisherInput = null;
+								break;
 
 							}//end of switch
 						}
 						
 						break;
+						
+					//Library BranchDB
 					case 4:
-						//Library Branches 
-						// CRUD
-						//auto increment for DB added
 						
 						BranchDAO branchdao = new BranchDAO();
 						System.out.println("1) Find Branch to Edit");
@@ -394,9 +479,15 @@ public class Administrator {
 								System.out.println(
 										"\nSelect which branch to change. Or type 0 to return to previous menu.");
 								
-								Integer branchSelection = Integer.parseInt(scan1.nextLine());
+								Integer branchSelection;
+									try {
+										branchSelection = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										branchSelection = Integer.parseInt(scan1.nextLine());
+									}
 								
-								if (branchSelection == 0) { //previous menu
+								if (branchSelection == 0 || branchSelection > allBranchs.size()) { //previous menu
 									branchInput = null;
 									break;
 								} else {
@@ -405,8 +496,15 @@ public class Administrator {
 									System.out.println("You've selected " + branchToChange.getBranchName() + " , " + branchToChange.getBranchAddress());
 									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
 		
-									Integer action2 = Integer.parseInt(scan1.nextLine());
-									if (action2 == 0) { //previous menu
+									Integer action2;
+									try {
+										action2 = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										action2 = Integer.parseInt(scan1.nextLine());
+									}
+									
+									if (action2 == 0 || action2 > 2) { //previous menu
 										branchInput = null;
 										break;
 									} else if (action2 == 1) { //UPDATE keep branch ID=
@@ -456,6 +554,11 @@ public class Administrator {
 								selected = false;
 								branchInput = null;
 								break;
+								
+							default:
+								selected = false;
+								branchInput = null;
+								break;
 
 							}
 						}
@@ -496,9 +599,15 @@ public class Administrator {
 								System.out.println(
 										"\nSelect which borrower to change. Or type 0 to return to previous menu.");
 								
-								Integer borrowerSelection = Integer.parseInt(scan1.nextLine());
+								Integer borrowerSelection;
+									try {
+										borrowerSelection = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										borrowerSelection = Integer.parseInt(scan1.nextLine());
+									}
 								
-								if (borrowerSelection == 0) { //previous menu
+								if (borrowerSelection == 0 || borrowerSelection > allBorrowers.size()) { //previous menu
 									borrowerInput = null;
 									break;
 								} else {
@@ -507,8 +616,16 @@ public class Administrator {
 									System.out.println("You've selected " + borrowerToChange.getName() + " , " + borrowerToChange.getAddress() + " , " + borrowerToChange.getPhone());
 									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
 		
-									Integer action3 = Integer.parseInt(scan1.nextLine());
-									if (action3 == 0) { //previous menu
+									Integer action3;
+										try {
+											action3 = Integer.parseInt(scan1.nextLine());
+										} catch (NumberFormatException e) {
+											System.out.println("Invalid choice, please try again.");
+											action3 = Integer.parseInt(scan1.nextLine());
+										}
+									
+									
+									if (action3 == 0 || action3 > 2) { //previous menu
 										borrowerInput = null;
 										break;
 									} else if (action3 == 1) { 
@@ -564,6 +681,11 @@ public class Administrator {
 								selected = false;
 								borrowerInput = null;
 								break;
+							
+							default:
+								selected = false;
+								borrowerInput = null;
+								break; //
 
 							}//end of switch
 						}
@@ -607,9 +729,15 @@ public class Administrator {
 								System.out.println(
 										"\nSelect which due date to change. Or type 0 to return to previous menu.");
 								
-								Integer changeDate = Integer.parseInt(scan1.nextLine());
+								Integer changeDate;
+									try {
+										changeDate = Integer.parseInt(scan1.nextLine());
+									} catch (NumberFormatException e) {
+										System.out.println("Invalid choice, please try again.");
+										changeDate = Integer.parseInt(scan1.nextLine());
+									}
 								
-								if (changeDate == 0) { //previous menu
+								if (changeDate == 0 || changeDate > allLoans.size() ) { //previous menu
 									bookLoanInput = null;
 									break;
 								} else {
@@ -624,13 +752,28 @@ public class Administrator {
 														+ loanToChange.getDueDate());
 									System.out.println("Enter 1 to Update 0 to return to previous menu ");
 		
-									Integer action4 = Integer.parseInt(scan1.nextLine());
-									if (action4 == 0) { //previous menu
+									Integer action4;
+										try {
+											action4 = Integer.parseInt(scan1.nextLine());
+										} catch (NumberFormatException e) {
+											System.out.println("Invalid choice, please try again.");
+											action4 = Integer.parseInt(scan1.nextLine());
+										}
+									
+									if (action4 == 0 || action4 > 1) { //previous menu
 										bookLoanInput = null;
 										break;
 									} else if (action4 == 1) { 
+										
 										System.out.println("Currently:"+loanToChange.getDueDate()+". How many days do you want to add to the due date?\n");
-										Integer addToTimestamp = Integer.parseInt(scan1.nextLine());
+										
+										Integer addToTimestamp;
+											try {
+												addToTimestamp = Integer.parseInt(scan1.nextLine());
+											} catch (NumberFormatException e) {
+												System.out.println("Invalid choice, please try again.");
+												addToTimestamp = Integer.parseInt(scan1.nextLine());
+											}
 										
 										//logic to add to current due date
 										Timestamp currentDueDate = loanToChange.getDueDate();
@@ -654,9 +797,12 @@ public class Administrator {
 								selected = false;
 								bookLoanInput = null;
 								break;
-								
+							
+							default:
+								selected = false;
+								bookLoanInput = null;
+								break;
 
-							}//end of switch
 						}
 						
 						/**
@@ -667,6 +813,13 @@ public class Administrator {
 						break;
 					
 					}
+					
+					default: //For Admin table
+						System.out.println("Invalid selection, please try again.");
+						selected = false;
+						break;
+					}//end of switch	
+						
 				}
 			}
 			

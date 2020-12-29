@@ -41,7 +41,7 @@ public class Librarian {
 		try {
 			choice = Integer.parseInt(scan.nextLine());
 		} catch (NumberFormatException e1) {
-			System.out.println("Invalid choice, please try again."); //Insures Integer
+			System.out.println("Invalid choice, please try again."); //ensures Integer
 			choice = Integer.parseInt(scan.nextLine());
 		}
 		
@@ -73,7 +73,7 @@ public class Librarian {
 					try {
 						branchId = Integer.parseInt(scan.nextLine());
 					} catch (NumberFormatException e) {
-						System.out.println("Invalid choice, please try again."); //Insures Integer
+						System.out.println("Invalid choice, please try again."); //ensures Integer
 						branchId = Integer.parseInt(scan.nextLine());
 					}
 				
@@ -98,7 +98,7 @@ public class Librarian {
 					try {
 						action = Integer.parseInt(scan.nextLine());
 					} catch (NumberFormatException e) {
-						System.out.println("Invalid choice, please try again."); //Insures Integer
+						System.out.println("Invalid choice, please try again."); //ensures Integer
 						action = Integer.parseInt(scan.nextLine());
 					}
 					System.out.println("");
@@ -114,21 +114,27 @@ public class Librarian {
 								+ branchId
 								+ " and Branch Name: "
 								+ branchs.get(branchId-1).getBranchName()
+								+ " and Branch Address: "
+								+ branchs.get(branchId-1).getBranchAddress()
 								+ ".\n "
 								+ "Enter ‘quit’ at any prompt to cancel operation.");
 						
 						System.out.println("Please enter new branch name or enter N/A for no change: ");
 						String newName = scan.nextLine();
-						if (newName == "quit") {
-							branched = false;
-							break;
-						}
+							if (newName.equals("quit")) {
+								branched = false;
+								break;
+							} else if (newName.equals("N/A")) {
+								newName = branchs.get(branchId-1).getBranchName();
+							}
 						System.out.println("Please enter new branch address or enter N/A for no change: ");
 						String newAddress = scan.nextLine();
-						if (newAddress == "quit") {
-							branched = false;
-							break;
-						}
+							if (newAddress.equals("quit")) {
+								branched = false;
+								break;
+							} else if (newAddress.equals("N/A")) {
+								newAddress = branchs.get(branchId-1).getBranchAddress();
+							}
 						
 						branchs.get(branchId-1).setBranchName(newName);
 						branchs.get(branchId-1).setBranchAddress(newAddress);						
@@ -171,7 +177,7 @@ public class Librarian {
 						try {
 							newCopies = Integer.parseInt(scan.nextLine());
 						} catch (NumberFormatException e) {
-							System.out.println("Invalid choice, please try again."); //Insures Integer
+							System.out.println("Invalid choice, please try again."); //ensures Integer
 							newCopies = Integer.parseInt(scan.nextLine());
 						}
 						
