@@ -104,7 +104,7 @@ public class BorrowerSession {
 							String branchAddress = a.getBranchAddress();
 							System.out.println(id + ") "+branchName+", "+branchAddress);
 						}
-						System.out.println("Enter 0 to go to previous menu");
+						System.out.println("0) Quit to previous menu");
 						
 						Integer branchId = Integer.parseInt(scan.nextLine());
 						System.out.println("");
@@ -128,7 +128,7 @@ public class BorrowerSession {
 								String author = a.getAuthor();
 								System.out.println(id + ") "+title+ " by "+author);
 							}
-							System.out.println("Enter 0 to go to previous menu");
+							System.out.println("0) Quit to previous menu");
 							System.out.println("Please Select a book to checkout");
 							Integer bookToSearch = Integer.parseInt(scan.nextLine());
 							System.out.println("");
@@ -148,25 +148,11 @@ public class BorrowerSession {
 							System.out.println("Existing number of copies: "+numOfCopies);
 							
 							if (numOfCopies == 0) { //so borrower can't check out empty books
-								System.out.println("Sorry there are no copies of this book to checkout");
+								System.out.println("Sorry there are no copies of this book to checkout\n");
 								branchId = null;
 								branched = false;
 							} else {
 																		
-								BookSelection.setNoOfCopies(numOfCopies - 1); // subtract 1 a and set new copy in model
-								copiesofBook.updateBookCopy(BookSelection); //set new copy in DB from model
-								
-								numOfCopies = BookSelection.getNoOfCopies(); //show new result
-								System.out.println("Now there are: "+numOfCopies);
-								
-								
-								/**NOW 
-								 * ADD 
-								 * BOOK_LOANS_DAO
-								 * BOOK_LOANS_TABLE
-					
-								*/
-								
 								BookLoanDAO bookloanDao = new BookLoanDAO();
 								BookLoan addLoan = new BookLoan();
 								addLoan.setBookId(bookToSearch);
@@ -181,13 +167,21 @@ public class BorrowerSession {
 								
 								addLoan.setDueDate(ts);
 								
-								bookloanDao.addBookLoan(addLoan);
+								try {
+									bookloanDao.addBookLoan(addLoan);
+								}  catch (SQLException e) {
+									System.out.println("You already have a copy of this book, please select another. \n");
+									branched = false;
+									break;
+								}
 								
+								BookSelection.setNoOfCopies(numOfCopies - 1); // subtract 1 a and set new copy in model
+								copiesofBook.updateBookCopy(BookSelection); //set new copy in DB from model
+								numOfCopies = BookSelection.getNoOfCopies(); //show new result
+								System.out.println("Now there are: "+numOfCopies);
 								System.out.println("The book has been checked out and logged. ");
 								System.out.println("");
-						
-										//date out
-										//due date = date out + 1 week
+							 
 								
 								//back to LIB3
 								branchId = null;
@@ -198,29 +192,16 @@ public class BorrowerSession {
 						}
 					} else if (action == "return") {
 						
-						//can only return a book he has select * from tbl_book_loans where cardNo = borrowerId;
-						//create instance of book copy to reduce by 1
-						
-						//show his book copies
-						//click return
-						//+ increase number of copies
-						// delete loan
-						
-						//Pick the branch you want to return to - might not be neccesary cause youre just deleting book loan and copy and branchId in book loan
-						//unless youre returning a book to any branch
-						//assuming you return book to same branch
-						
 						BookLoanDAO bookLoans = new BookLoanDAO();
 						List<BookLoan> borrowerBooks = bookLoans.readBookLoansCardNo(cardNo);
 						
 
 						for (BookLoan a: borrowerBooks) {
 							Integer book = a.getBookId();
-							Integer branch = a.getBranchId();
-							Integer borrowerCard = a.getCardNo();
+							String title = a.getTitle();
 							Timestamp dateOut = a.getDateOut();
 							Timestamp dueDate = a.getDueDate();
-							System.out.println(book + " taken out on " + dateOut + " due on " +dueDate); //add left join for title
+							System.out.println(book + ") " +title+ " taken out on " + dateOut + " due on " +dueDate); //add left join for title
 						}
 						
 						System.out.println("\n Which book would you like to return? Type 0 to return to previous menu.");

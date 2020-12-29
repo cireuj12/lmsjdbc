@@ -34,17 +34,27 @@ public class BookLoanDAO extends BaseDAO {
 	}
 	
 	public List<BookLoan> readBookLoansCardNo(Integer cardNo) throws ClassNotFoundException, SQLException { //slightly different
-		return read("select * from tbl_book_loans where cardNo = ?", new Object[] {cardNo});
+		return read("select tbl_book_loans.bookId, branchId, cardNo, dateOut, dueDate, tbl_book.title "
+				+ "from tbl_book_loans left join tbl_book "
+				+ "on tbl_book_loans.bookId = tbl_book.bookId "
+				+ "where cardNo = ?", new Object[] {cardNo});
 	
 	}
 	
 	public List<BookLoan> readBookLoansByIDs(Integer cardNo, Integer branchId, Integer bookId ) throws ClassNotFoundException, SQLException { //slightly different
-		return read("select * from tbl_book_loans where cardNo = ? and branchId = ? and bookId = ?", new Object[] {cardNo, branchId, bookId});
+		return read("select tbl_book_loans.bookId, branchId, cardNo, dateOut, dueDate, tbl_book.title "
+				+ "from tbl_book_loans left join tbl_book "
+				+ "on tbl_book_loans.bookId = tbl_book.bookId "
+				+ "where cardNo = ? and branchId = ? and bookId = ?", 
+				new Object[] {cardNo, branchId, bookId});
 	
 	}
 	
 	public List<BookLoan> readBookLoans() throws ClassNotFoundException, SQLException { //slightly different
-		return read("select * from tbl_book_loans", new Object[] {});
+		return read("select tbl_book_loans.bookId, branchId, cardNo, dateOut, dueDate, tbl_book.title "
+				+ "from tbl_book_loans left join tbl_book "
+				+ "on tbl_book_loans.bookId = tbl_book.bookId "
+				, new Object[] {});
 	
 	}
 	
@@ -57,7 +67,8 @@ public class BookLoanDAO extends BaseDAO {
 		while (rs.next()) {
 			BookLoan bookLoan = new BookLoan(); //  this part is specific to each entity domain, so hard for Base
 			
-			bookLoan.setBookId(rs.getInt("bookId"));
+			bookLoan.setBookId(rs.getInt("tbl_book_loans.bookId"));
+			bookLoan.setTitle(rs.getString("tbl_book.title"));
 			bookLoan.setBranchId(rs.getInt("branchId"));
 			bookLoan.setCardNo(rs.getInt("cardNo"));
 			bookLoan.setDateOut(rs.getTimestamp("dateOut"));
