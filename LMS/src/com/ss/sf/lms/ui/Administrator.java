@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
+import com.ss.sf.lms.dao.AuthorDAO;
 import com.ss.sf.lms.dao.BookDAO;
+import com.ss.sf.lms.domain.Author;
 import com.ss.sf.lms.domain.Book;
 
 /**
@@ -124,8 +126,19 @@ public class Administrator {
 								selected = false;
 								bookInput = null;
 								break;
-
+							/**
+							 * UPDATE/DELETE BOOK 
+							 * COMPLETE
+							 */
+								
+								
 							case 2: //Add book
+								Book bookToAdd = new Book();
+								
+								//NEED TO FIX DB TO AUTO INCREMENT
+								System.out.println("What is the title of the book?");
+								System.out.println("What is the authId of the book?"); //valid authId . Please add author first
+								System.out.println("What is the pubId of the book?"); //valid pubId . Plese add pubisher first
 								
 								break;
 
@@ -133,7 +146,95 @@ public class Administrator {
 						}
 						break;
 					case 2:
-						//Authors UPDATE/DELETE /ADD 1hr
+						//Authors UPDATE/DELETE /ADD 30min
+						AuthorDAO authordao = new AuthorDAO();
+						System.out.println("1) Find Author to Edit");
+						System.out.println("2) Add Author");
+						System.out.println("3) Return to previous menu\n");
+						
+						Integer authorInput = Integer.parseInt(scan1.nextLine());
+						
+						while (authorInput != null) {
+							switch (authorInput) {
+							case 3: //previous menu
+								selected = false;
+								authorInput = null;
+								break; //
+							case 1: //Find all authors;
+								List<Author> allAuthors = authordao.readAuthors();
+								for (Author a : allAuthors) {
+									Integer id = a.getAuthorId();
+									String author = a.getAuthorName();
+									System.out.println(id + ") " + author);
+								}
+								System.out.println(
+										"\nSelect which author to change. Or type 0 to return to previous menu.");
+								
+								Integer authorSelection = Integer.parseInt(scan1.nextLine());
+								
+								if (authorSelection == 0) { //previous menu
+									authorInput = null;
+									break;
+								} else {
+									Author authorToChange = allAuthors.get(authorSelection - 1 );
+									System.out.println("You've selected " + authorToChange.getAuthorName());
+									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
+		
+									Integer action1 = Integer.parseInt(scan1.nextLine());
+									if (action1 == 0) { //previous menu
+										authorInput = null;
+										break;
+									} else if (action1 == 1) { //UPDATE keep author ID=
+										System.out.println("Currently:"+authorToChange.getAuthorName()+". What do you want to change the author to?\n");
+										authorToChange.setAuthorName(scan1.nextLine());
+
+										
+										authordao.updateAuthor(authorToChange); //send update to database
+										
+										System.out.println("/n The author has been updated!");
+										
+									} else { //DELETE
+										System.out.println("Type yes to confirm deletion");
+										String confirm = scan1.nextLine();
+										if (confirm.equals("yes")) { // compare string data not string object
+											authordao.deleteAuthor(authorToChange);
+											System.out.println("This author has been deleted\n");
+										} else {
+											System.out.println("Reverting...\n");
+											authorInput = null;
+											break;
+										}
+									}
+								}
+								//done with update/delete go back to previous menu
+								selected = false;
+								authorInput = null;
+								break;
+								
+								
+							case 2: //Add author
+								Author authorToAdd = new Author();
+
+								System.out.println("What is the name of the author?\n");
+								String authorName = scan1.nextLine();
+								authorToAdd.setAuthorName(authorName);
+								
+								authordao.addAuthor(authorToAdd);
+								
+								System.out.println("The author has been added\n");
+								selected = false;
+								authorInput = null;
+								break;
+
+							}
+						}
+						
+						
+						/**
+						 * CRUD AUTHOR 
+						 * COMPLETE
+						 */
+							
 						break;
 					case 3:
 						//Publishers UPDATE/DELETE /ADD 1hr 
