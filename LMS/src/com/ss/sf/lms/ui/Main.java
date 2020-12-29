@@ -19,31 +19,17 @@ import com.ss.sf.lms.domain.BookLoan;
 import com.ss.sf.lms.domain.Borrower;
 
 public class Main {
-	//create session class?
-	//Librarian Class
-		//methods
-			//initialize
-			//log out
-			//boolean for session active
-	//Administrator Class
-		//methods
-	//Borrower Class
-		//methods
 	
-	
-	//super loop break/continue that goes back to previous menu?
-	
-	
-	//while role selection == certain class
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
 		
 		Boolean loggedIn = false;
 		Scanner scan = new Scanner(System.in);
+		//if quit is typed in any time System.out.close();
 		do {
 			System.out.println("Welcome to the SS Library Management System. Which category of a user are you: \n");
 			System.out.println("1) Librarian");
-			System.out.println("2) Administrator(Functionality still in Development)");
+			System.out.println("2) Administrator");
 			System.out.println("3) Borrower");
 			System.out.println("4) Close");
 			

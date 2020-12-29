@@ -14,10 +14,12 @@ import com.ss.sf.lms.dao.BookDAO;
 import com.ss.sf.lms.dao.BookLoanDAO;
 import com.ss.sf.lms.dao.BorrowerDAO;
 import com.ss.sf.lms.dao.BranchDAO;
+import com.ss.sf.lms.dao.PublisherDAO;
 import com.ss.sf.lms.dao.BookLoanDAO;
 import com.ss.sf.lms.domain.Author;
 import com.ss.sf.lms.domain.Book;
 import com.ss.sf.lms.domain.Branch;
+import com.ss.sf.lms.domain.Publisher;
 import com.ss.sf.lms.domain.Borrower;
 import com.ss.sf.lms.domain.BookLoan;
 
@@ -43,7 +45,7 @@ public class Administrator {
 			System.out.println("Which table would you like to change?");
 			System.out.println("1) Books");
 			System.out.println("2) Authors");
-			System.out.println("3) Publishers(Incomplete)");
+			System.out.println("3) Publishers");
 			System.out.println("4) Library Branches");
 			System.out.println("5) Borrowers");
 			System.out.println("6) Override Due Date");
@@ -265,11 +267,102 @@ public class Administrator {
 							
 						break;
 					case 3:
-						//Publishers 
-						//CRUD 1HR
-						//auto increment for DB added
+						PublisherDAO publisherdao = new PublisherDAO();
+						System.out.println("1) Find Publisher to Edit");
+						System.out.println("2) Add Publisher");
+						System.out.println("3) Return to previous menu\n");
 						
-						//NEED TO CREATE PUBLISHER OBJECT AND DAO
+						Integer publisherInput = Integer.parseInt(scan1.nextLine());
+						
+						while (publisherInput != null) {
+							switch (publisherInput) {
+							case 3: //previous menu
+								selected = false;
+								publisherInput = null;
+								break; //
+							case 1: //Find all publishers;
+								List<Publisher> allPublishers = publisherdao.readPublishers();
+								for (Publisher a : allPublishers) {
+									Integer id = a.getPublisherId();
+									String name = a.getPublisherName();
+									String address = a.getPublisherAddress();
+									String phone = a.getPublisherPhone();
+									System.out.println(id + ") " + name +" , " + address +" , " + phone);
+								}
+								System.out.println(
+										"\nSelect which Publisher to change. Or type 0 to return to previous menu.");
+								
+								Integer publisherSelection = Integer.parseInt(scan1.nextLine());
+								
+								if (publisherSelection == 0) { //previous menu
+									publisherInput = null;
+									break;
+								} else {
+								
+									Publisher publisherToChange = publisherdao.readPublisherById(publisherSelection).get(0);
+									System.out.println("You've selected " + publisherToChange.getPublisherName() + " , " + publisherToChange.getPublisherAddress() + " , " + publisherToChange.getPublisherPhone());
+									System.out.println("Enter 1 to Update, 2 to delete, 0 to return to previous menu ");
+		
+									Integer action5 = Integer.parseInt(scan1.nextLine());
+									if (action5 == 0) { //previous menu
+										publisherInput = null;
+										break;
+									} else if (action5 == 1) { 
+										System.out.println("Currently:"+publisherToChange.getPublisherName()+". What do you want to change the name to?\n");
+										publisherToChange.setPublisherName(scan1.nextLine());
+										System.out.println("Currently:"+publisherToChange.getPublisherAddress()+". What do you want to change the address to?\n");
+										publisherToChange.setPublisherAddress(scan1.nextLine());
+										System.out.println("Currently:"+publisherToChange.getPublisherPhone()+". What do you want to change the phone to?\n");
+										publisherToChange.setPublisherPhone(scan1.nextLine());
+
+										
+										publisherdao.updatePublisher(publisherToChange); //send update to database
+										
+										System.out.println("/n The publisher has been updated!");
+										
+									} else { //DELETE
+										System.out.println("Type yes to confirm deletion");
+										String confirm2 = scan1.nextLine();
+										if (confirm2.equals("yes")) { // compare string data not string object
+											publisherdao.deletePublisher(publisherToChange);
+											System.out.println("This publisher has been deleted\n");
+										} else {
+											System.out.println("Reverting...\n");
+											publisherInput = null;
+											break;
+										}
+									}
+								}
+								//done with update/delete go back to previous menu
+								selected = false;
+								publisherInput = null;
+								break;
+								
+								
+							case 2: //Add author
+								Publisher publisherToAdd = new Publisher();
+
+								System.out.println("What is the name of the publisher?\n");
+								String publisherName = scan1.nextLine();
+								publisherToAdd.setPublisherName(publisherName);
+								
+								System.out.println("What is the address of the publisher?\n");
+								String publisherAddressName = scan1.nextLine();
+								publisherToAdd.setPublisherAddress(publisherAddressName);
+								
+								System.out.println("What is the phone # of the publisher?\n");
+								String publisherPhone = scan1.nextLine();
+								publisherToAdd.setPublisherPhone(publisherPhone);
+								
+								publisherdao.addPublisher(publisherToAdd);
+								
+								System.out.println("The publisher has been added.\n");
+								selected = false;
+								publisherInput = null;
+								break;
+
+							}//end of switch
+						}
 						
 						break;
 					case 4:
