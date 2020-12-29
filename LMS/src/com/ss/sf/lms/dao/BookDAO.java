@@ -10,8 +10,8 @@ import com.ss.sf.lms.domain.Book;
 public class BookDAO extends BaseDAO {
 	
 	public void addBook(Book book) throws ClassNotFoundException, SQLException {
-		save("Insert into tbl_book (bookId, title, authID, pubId ) values (?)", 
-				new Object[] {book.getBookId(),
+		save("Insert into tbl_book ( title, authID, pubId ) values (?, ? ,?)", 
+				new Object[] {
 								book.getTitle(),
 								book.getAuthId(),
 								book.getPubId()});

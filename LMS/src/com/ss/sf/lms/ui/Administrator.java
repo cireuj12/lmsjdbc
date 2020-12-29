@@ -41,7 +41,7 @@ public class Administrator {
 	public void launch() throws ClassNotFoundException, SQLException {
 		
 			System.out.println("Which table would you like to change?");
-			System.out.println("1) Books(Incomplete)");
+			System.out.println("1) Books");
 			System.out.println("2) Authors");
 			System.out.println("3) Publishers(Incomplete)");
 			System.out.println("4) Library Branches");
@@ -146,12 +146,26 @@ public class Administrator {
 							case 2: //Add book
 								Book bookToAdd = new Book();
 								
-								//NEED TO FIX DB TO AUTO INCREMENT
-								System.out.println("What is the title of the book?");
-								System.out.println("What is the authId of the book?"); //valid authId . Please add author first
-								System.out.println("What is the pubId of the book?"); //valid pubId . Plese add pubisher first
+								//AUTO INCREMENT FIXED
+								System.out.println("What is the title of the book?\n");
+								String bookName = scan1.nextLine();
+								bookToAdd.setTitle(bookName);
 								
+								System.out.println("What is the author id of the book? The author must be in thee database.\n");
+								Integer authorId = Integer.parseInt(scan1.nextLine());
+								bookToAdd.setAuthId(authorId);
+								
+								System.out.println("What is the publisher id of the book? The publisher must be in the database.\n");
+								Integer pubId = Integer.parseInt(scan1.nextLine());
+								bookToAdd.setPubId(pubId);
+								
+								bookdao.addBook(bookToAdd);
+								
+								System.out.println("The book has been added.\n");
+								selected = false;
+								bookInput = null;
 								break;
+								
 
 							}
 						}
